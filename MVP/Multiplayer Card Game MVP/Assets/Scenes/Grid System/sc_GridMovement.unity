@@ -160,13 +160,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 178329597}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2059274361}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1271437195}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1271437194
 GameObject:
@@ -177,6 +177,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1271437195}
+  - component: {fileID: 1271437196}
+  - component: {fileID: 1271437197}
   m_Layer: 0
   m_Name: Grid Manager
   m_TagString: Untagged
@@ -196,9 +198,42 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 178329599}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1271437196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271437194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64e8291046f6474e99d958d6246311a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gridWidth: 8
+  _gridHeight: 4
+  _hoveredCellHighlightPrefab: {fileID: 5114997266451876714, guid: 973de5c1c394dac44a58e1afb0994773, type: 3}
+--- !u!114 &1271437197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271437194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c66eb01fe5457ea8e6957ac21579e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderTilemap: {fileID: 2059274363}
+  _playerCellTile: {fileID: 11400000, guid: 53524047370b1f84491687f3af890e3b, type: 2}
+  _enemyCellTile: {fileID: 11400000, guid: 7c7bc079a7f6a08428e2b38acadfa411, type: 2}
+  _baseCellTile: {fileID: 11400000, guid: d417c92dbeeee9343907311e18b9f3c3, type: 2}
+  _availableCellHighlightPrefab: {fileID: 5114997266451876714, guid: daed2e5dbcb10304e96bbbe66c08c900, type: 3}
 --- !u!1 &1950816769
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +271,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -461,5 +496,4 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1950816772}
-  - {fileID: 178329599}
   - {fileID: 1271437195}
