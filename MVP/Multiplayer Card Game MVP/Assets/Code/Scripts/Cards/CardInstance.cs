@@ -1,18 +1,32 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using World.Grids;
 
 namespace Cards
 {
     public class CardInstance : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        public CardData Data { get; private set; }
+        [SerializeField]
+        private TMP_Text _nameText;
+        
+        [SerializeField]
+        private TMP_Text _manaCostText;
+        
+        [SerializeField]
+        private TMP_Text _descriptionText;
+        
+        [SerializeField]
+        private Image _artImage;
         
         private PlayerHandManager _playerHandManager;
         private Vector3 _homePosition;
         private bool _isBeingDragged;
         private CellHighlightGroup _highlighter;
+        
+        public CardData Data { get; private set; }
 
 
         private void Update()
@@ -25,6 +39,7 @@ namespace Cards
 
                     if (Data.PlayType == CardPlayType.Cell)
                         TargetingArrow.Instance.Deactivate();
+                    DestroyHighlighter();
                 }
                 return;
             }
@@ -37,6 +52,11 @@ namespace Cards
         {
             Data = data;
             _playerHandManager = playerHandManager;
+            
+            _nameText.text = data.CardName;
+            _manaCostText.text = data.ManaCost.ToString();
+            _descriptionText.text = data.Description;
+            _artImage.sprite = data.Sprite;
         }
         
         
@@ -82,11 +102,8 @@ namespace Cards
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (_highlighter != null)
-            {
-                Destroy(_highlighter.gameObject);
-                _highlighter = null;
-            }
+            DestroyHighlighter();
+            
             if (!_isBeingDragged)
                 return;
             
@@ -108,6 +125,16 @@ namespace Cards
             }
             
             _isBeingDragged = false;
+        }
+
+
+        private void DestroyHighlighter()
+        {
+            if (_highlighter == null)
+                return;
+            
+            Destroy(_highlighter.gameObject);
+            _highlighter = null;
         }
 
 
