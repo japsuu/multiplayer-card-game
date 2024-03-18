@@ -23,8 +23,8 @@ namespace World.Grids
         [SerializeField]
         private Tile _baseCellTile;
 
-        [FormerlySerializedAs("_availableCellHighlightPrefab")]
         [Header("Cell highlighting")]
+        
         [SerializeField]
         [Tooltip("Spawned over cells the player may move to.")]
         private CellHighlighter _emptyCellHighlightPrefab;
@@ -32,6 +32,9 @@ namespace World.Grids
         [SerializeField]
         [Tooltip("Spawned over cells the player may NOT move to.")]
         private CellHighlighter _blockedCellHighlightPrefab;
+
+        [SerializeField]
+        private CellHighlightGroup _highlightGroupPrefab;
 
         private GridData _gridData;
         private readonly List<CellHighlighter> _highlightedCells = new();
@@ -60,6 +63,12 @@ namespace World.Grids
             foreach (CellHighlighter highlight in _highlightedCells)
                 Destroy(highlight.gameObject);
             _highlightedCells.Clear();
+        }
+        
+        
+        public CellHighlightGroup CreateHighlightGroup()
+        {
+            return Instantiate(_highlightGroupPrefab, transform);
         }
 
 
