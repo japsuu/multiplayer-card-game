@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 namespace World.Grids
@@ -22,10 +23,15 @@ namespace World.Grids
         [SerializeField]
         private Tile _baseCellTile;
 
+        [FormerlySerializedAs("_availableCellHighlightPrefab")]
         [Header("Cell highlighting")]
         [SerializeField]
         [Tooltip("Spawned over cells the player may move to.")]
-        private CellHighlighter _availableCellHighlightPrefab;
+        private CellHighlighter _emptyCellHighlightPrefab;
+
+        [SerializeField]
+        [Tooltip("Spawned over cells the player may NOT move to.")]
+        private CellHighlighter _blockedCellHighlightPrefab;
 
         private GridData _gridData;
         private readonly List<CellHighlighter> _highlightedCells = new();
@@ -37,40 +43,15 @@ namespace World.Grids
             _gridData.OnGridUpdated += InitializeRenderGrid;
             InitializeRenderGrid();
         }
-
-
-        private void InitializeRenderGrid()
+        
+        
+        public void HighlightCell(Vector2Int cell, bool isBlocked)
         {
-            for (int y = 0; y < _gridData.Height; y++)
-            for (int x = 0; x < _gridData.Width; x++)
-            {
-                Tile tile = DetermineTileType(x, y);
-
-                _renderTilemap.SetTile(new Vector3Int(x, y, 0), tile);
-            }
-        }
-
-
-        private Tile DetermineTileType(int x, int y)
-        {
-            Tile tile;
-            if (x % 2 == 0)
-                tile = y % 2 == 0 ? _baseCellTile : _playerCellTile;
-            else
-                tile = y % 2 == 0 ? _enemyCellTile : _baseCellTile;
-
-            return tile;
-        }
-
-
-        public void StartHighlightCells(IEnumerable<Vector2Int> cells)
-        {
-            foreach (Vector2Int cell in cells)
-            {
-                CellHighlighter highlight = Instantiate(_availableCellHighlightPrefab, transform);
-                highlight.transform.position = new Vector3(cell.x, cell.y, 0);
-                _highlightedCells.Add(highlight);
-            }
+            CellHighlighter highlight = isBlocked ? _blockedCellHighlightPrefab : _emptyCellHighlightPrefab;
+            CellHighlighter newHighlight = Instantiate(highlight, transform);
+            Vector3 cellWorldPos = CellToWorld((Vector3Int)cell);
+            newHighlight.transform.position = cellWorldPos;
+            _highlightedCells.Add(newHighlight);
         }
 
 
@@ -91,6 +72,30 @@ namespace World.Grids
         public Vector3 CellToWorld(Vector3Int cellPos)
         {
             return _renderTilemap.GetCellCenterWorld(cellPos);
+        }
+
+
+        private void InitializeRenderGrid()
+        {
+            for (int y = 0; y < _gridData.Height; y++)
+            for (int x = 0; x < _gridData.Width; x++)
+            {
+                Tile tile = DetermineTileType(x, y);
+
+                _renderTilemap.SetTile(new Vector3Int(x, y, 0), tile);
+            }
+        }
+
+
+        private Tile DetermineTileType(int x, int y)
+        {
+            bool isBaseCell = (x + y) % 2 == 0;
+            if (isBaseCell)
+                return _baseCellTile;
+
+            bool isPlayer = _gridData.GetCellSide(x, y) == CellSide.Player;
+            
+            return isPlayer ? _playerCellTile : _enemyCellTile;
         }
     }
 }

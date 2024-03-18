@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5019608}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5548819125416495726}
   - component: {fileID: 5114997266451876714}
   m_Layer: 0
-  m_Name: pf_CellHighlightCursor
+  m_Name: pf_CellHighlight_Blocked
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteRenderer: {fileID: 2139166117291590838}
-  _enablePulsing: 0
-  _pulseSpeed: 1
+  _pulseSpeed: 1.5
   _pulseMinAlpha: 0.4
   _pulseMaxAlpha: 0.9
