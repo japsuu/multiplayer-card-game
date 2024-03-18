@@ -87,6 +87,52 @@ namespace World.Grids
             UpdateHoveredCellHighlighter();
             CheckClickedCell();
         }
+        
+        
+        public bool TrySnapToCell(Vector3 worldPos, out Vector3 cellPos)
+        {
+            if (!TryGetWorldToCell(worldPos, out Vector2Int gridCellPos))
+            {
+                cellPos = Vector3.zero;
+                return false;
+            }
+
+            cellPos = _gridRenderer.CellToWorld(new Vector3Int(gridCellPos.x, gridCellPos.y, 0));
+            return true;
+        }
+
+
+        public bool TryGetWorldToCell(Vector3 worldPos, out Vector2Int cellPos)
+        {
+            Vector3Int gridCellPos = _gridRenderer.WorldToCell(worldPos);
+            if (gridCellPos.x < 0 || gridCellPos.x >= _grid.Width || gridCellPos.y < 0 || gridCellPos.y >= _grid.Height)
+            {
+                cellPos = new Vector2Int(-1, -1);
+                return false;
+            }
+
+            cellPos = new Vector2Int(gridCellPos.x, gridCellPos.y);
+            return true;
+        }
+        
+        
+        public bool TryGetCellToWorld(Vector2Int cellPos, out Vector3 worldPos)
+        {
+            if (cellPos.x < 0 || cellPos.x >= _grid.Width || cellPos.y < 0 || cellPos.y >= _grid.Height)
+            {
+                worldPos = Vector3.zero;
+                return false;
+            }
+
+            worldPos = _gridRenderer.CellToWorld(new Vector3Int(cellPos.x, cellPos.y, 0));
+            return true;
+        }
+        
+        
+        public CellHighlightGroup CreateHighlightGroup()
+        {
+            return _gridRenderer.CreateHighlightGroup();
+        }
 
 
         private void CheckClickedCell()
@@ -131,20 +177,6 @@ namespace World.Grids
             
             // If any other cell was clicked, stop highlighting cells.
             StopHighlightCells();
-        }
-
-
-        private bool TryGetWorldToCell(Vector3 worldPos, out Vector2Int cellPos)
-        {
-            Vector3Int gridCellPos = _gridRenderer.WorldToCell(worldPos);
-            if (gridCellPos.x < 0 || gridCellPos.x >= _grid.Width || gridCellPos.y < 0 || gridCellPos.y >= _grid.Height)
-            {
-                cellPos = new Vector2Int(-1, -1);
-                return false;
-            }
-
-            cellPos = new Vector2Int(gridCellPos.x, gridCellPos.y);
-            return true;
         }
 
 
