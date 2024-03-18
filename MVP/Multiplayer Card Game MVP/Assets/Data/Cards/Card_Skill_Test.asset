@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ca3494df9aa457797eae193491ebb09, type: 3}
-  m_Name: Card_Skill_Test2
+  m_Name: Card_Skill_Test
   m_EditorClassIdentifier: 
-  _cardName: Test 2
-  _description: Testing card numero dos
-  _sprite: {fileID: 0}
+  _cardName: Test Skill
+  _description: Testing card numero tres. A skill card!
+  _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
   _playType: 0
   _manaCost: 2

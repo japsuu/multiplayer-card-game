@@ -1,4 +1,5 @@
 ﻿using System;
+using Cards.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e47818c4b0e49c793e1110f49c91575, type: 3}
   m_Name: LineGridPattern_V_1
   m_EditorClassIdentifier: 
-  _direction: 0
+  _direction: 1
   _range: 1

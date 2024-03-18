@@ -2,7 +2,7 @@
 using UnityEngine;
 using World.Grids;
 
-namespace Cards
+namespace Cards.Data
 {
     public abstract class CardData : ScriptableObject
     {

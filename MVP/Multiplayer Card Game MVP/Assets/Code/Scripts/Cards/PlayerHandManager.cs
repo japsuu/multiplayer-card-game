@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cards.Data;
 using UnityEngine;
 
 namespace Cards
 {
     public class PlayerHand
     {
-        public readonly List<CardInstance> Cards;
-
-
-        public PlayerHand(List<CardInstance> cards)
-        {
-            Cards = cards;
-        }
+        public readonly List<CardInstance> Cards = new();
     }
     
     public class PlayerHandManager : MonoBehaviour
@@ -28,6 +23,11 @@ namespace Cards
         [SerializeField]
         private List<CardData> _startingCards;
         
+        [Header("Debug")]
+        
+        [SerializeField]
+        private List<CardData> _spawnableRandomCards;
+        
         [Header("Card Positioning")]
 
         [SerializeField]
@@ -37,19 +37,21 @@ namespace Cards
         private Transform _cardPosTargetRoot;
         
         private readonly List<Transform> _cardPosTargets = new();
-        private PlayerHand _hand;
+        private PlayerHand _hand = new();
         
         
         private void Start()
         {
-            List<CardInstance> cards = new();
             foreach (CardData cardData in _startingCards)
-            {
-                CardInstance card = Instantiate(_cardPrefab, _cardRoot);
-                card.Initialize(cardData, this);
-                cards.Add(card);
-            }
-            _hand = new PlayerHand(cards);
+                AddCardToHand(cardData);
+        }
+
+
+        public void AddCardToHand(CardData cardData)
+        {
+            CardInstance card = Instantiate(_cardPrefab, _cardRoot);
+            card.Initialize(cardData, this);
+            _hand.Cards.Add(card);
         }
 
 
@@ -63,6 +65,19 @@ namespace Cards
                 CardInstance card = _hand.Cards[i];
                 card.UpdateHomePosition(GetCardPosition(i));
             }
+            
+            SpawnRandomDebugCard();
+        }
+
+
+        private void SpawnRandomDebugCard()
+        {
+            if (!Input.GetKeyDown(KeyCode.P))
+                return;
+            
+            CardData randomCard = _spawnableRandomCards[UnityEngine.Random.Range(0, _spawnableRandomCards.Count)];
+            AddCardToHand(randomCard);
+            Debug.Log($"Added random card '{randomCard.CardName}' to hand.");
         }
 
 

@@ -3,7 +3,7 @@ using Cards.AttackPatterns;
 using UnityEngine;
 using World.Grids;
 
-namespace Cards
+namespace Cards.Data
 {
     [CreateAssetMenu(menuName = "Cards/Create Attack Card", fileName = "Card_Attack_", order = 0)]
     public class AttackCardData : CardData
