@@ -2,12 +2,13 @@
 {
     /// <summary>
     /// Determines how a card can be played.
-    /// Affects for example if the game will draw a "Hearthstone-style" targeting arrow.
+    /// Affects for example if the game will draw a "Hearthstone-style" targeting arrow while dragging the card.
     /// </summary>
-    public enum CardPlayType
+    public enum CardPlayTarget
     {
         /// <summary>
         /// The card will be played to the middle of the board.
+        /// Example: some skills.
         /// </summary>
         Anywhere,
 

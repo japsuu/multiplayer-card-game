@@ -1,7 +1,7 @@
 ﻿using System.Collections;
+using Boards;
 using Cards.AttackPatterns;
 using UnityEngine;
-using World.Grids;
 
 namespace Cards.Data
 {

@@ -5,8 +5,11 @@ using DG.Tweening.Plugins.Options;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace World.Grids
+namespace Boards
 {
+    /// <summary>
+    /// Highlights a single cell on the board.
+    /// </summary>
     public class CellHighlighter : MonoBehaviour
     {
         [Serializable]

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
-namespace World.Grids
+namespace Boards
 {
     /// <summary>
-    /// Renders the gameplay grid by placing alternating colored cells in a chess-pattern on a tile-map.
+    /// Renders the gameplay board by placing alternating colored cells in a chess-pattern on a tile-map.
     /// </summary>
-    public class GridRenderer : MonoBehaviour
+    public class BoardRenderer : MonoBehaviour
     {
         [Header("Tilemap")]
         [SerializeField]
@@ -36,18 +35,23 @@ namespace World.Grids
         [SerializeField]
         private CellHighlightGroup _highlightGroupPrefab;
 
-        private GridData _gridData;
+        private Board _board;
         private readonly List<CellHighlighter> _highlightedCells = new();
 
 
-        public void InitializeGrid(GridData gridData)
+        public void InitializeGrid(Board board)
         {
-            _gridData = gridData;
-            _gridData.OnGridUpdated += InitializeRenderGrid;
-            InitializeRenderGrid();
+            _board = board;
+            _board.BoardSizeChanged += InitializeRenderBoard;
+            InitializeRenderBoard();
         }
         
         
+        /// <summary>
+        /// Highlights the defined cell on the board.
+        /// </summary>
+        /// <param name="cell">The cell to highlight.</param>
+        /// <param name="isBlocked">Whether the cell is blocked (contains something) or not.</param>
         public void HighlightCell(Vector2Int cell, bool isBlocked)
         {
             CellHighlighter highlight = isBlocked ? _blockedCellHighlightPrefab : _emptyCellHighlightPrefab;
@@ -58,6 +62,9 @@ namespace World.Grids
         }
 
 
+        /// <summary>
+        /// Stops highlighting all cells on the board.
+        /// </summary>
         public void StopHighlightCells()
         {
             foreach (CellHighlighter highlight in _highlightedCells)
@@ -66,28 +73,40 @@ namespace World.Grids
         }
         
         
+        /// <summary>
+        /// Creates a new highlight group.
+        /// </summary>
+        /// <returns></returns>
         public CellHighlightGroup CreateHighlightGroup()
         {
             return Instantiate(_highlightGroupPrefab, transform);
         }
 
 
+        /// <summary>
+        /// Gets the cell position in the world space.
+        /// </summary>
+        /// <param name="mousePos">The world (usually mouse) position.</param>
+        /// <returns>The cell position in the world space.</returns>
         public Vector3Int WorldToCell(Vector3 mousePos)
         {
             return _renderTilemap.WorldToCell(mousePos);
         }
 
 
+        /// <summary>
+        /// Inverse of <see cref="WorldToCell"/>.
+        /// </summary>
         public Vector3 CellToWorld(Vector3Int cellPos)
         {
             return _renderTilemap.GetCellCenterWorld(cellPos);
         }
 
 
-        private void InitializeRenderGrid()
+        private void InitializeRenderBoard()
         {
-            for (int y = 0; y < _gridData.Height; y++)
-            for (int x = 0; x < _gridData.Width; x++)
+            for (int y = 0; y < _board.Height; y++)
+            for (int x = 0; x < _board.Width; x++)
             {
                 Tile tile = DetermineTileType(x, y);
 
@@ -102,7 +121,7 @@ namespace World.Grids
             if (isBaseCell)
                 return _baseCellTile;
 
-            bool isPlayer = _gridData.GetCellSide(x, y) == CellSide.Player;
+            bool isPlayer = _board.GetCellSide(x, y) == CellSide.Player;
             
             return isPlayer ? _playerCellTile : _enemyCellTile;
         }

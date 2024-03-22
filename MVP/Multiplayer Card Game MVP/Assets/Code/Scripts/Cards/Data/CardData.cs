@@ -1,9 +1,13 @@
 ﻿using System.Collections;
+using Boards;
 using UnityEngine;
-using World.Grids;
+using UnityEngine.Serialization;
 
 namespace Cards.Data
 {
+    /// <summary>
+    /// Contains the immutable data of a card.
+    /// </summary>
     public abstract class CardData : ScriptableObject
     {
         [SerializeField]
@@ -15,8 +19,9 @@ namespace Cards.Data
         [SerializeField]
         private Sprite _sprite;
 
+        [FormerlySerializedAs("_playType")]
         [SerializeField]
-        private CardPlayType _playType;
+        private CardPlayTarget _playTarget;
 
         [SerializeField]
         private int _manaCost;
@@ -24,7 +29,7 @@ namespace Cards.Data
         public string Description => _description;
         public Sprite Sprite => _sprite;
         public int ManaCost => _manaCost;
-        public CardPlayType PlayType => _playType;
+        public CardPlayTarget PlayTarget => _playTarget;
         
         
         /// <summary>

@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace Cards
 {
-    public class PlayerHand
-    {
-        public readonly List<CardInstance> Cards = new();
-    }
-    
     public class PlayerHandManager : MonoBehaviour
     {
         [Header("General")]
@@ -37,7 +32,7 @@ namespace Cards
         private Transform _cardPosTargetRoot;
         
         private readonly List<Transform> _cardPosTargets = new();
-        private PlayerHand _hand = new();
+        private readonly PlayerHand _hand = new();
         
         
         private void Start()

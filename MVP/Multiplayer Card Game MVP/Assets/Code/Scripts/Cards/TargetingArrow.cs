@@ -1,6 +1,6 @@
-﻿using Singletons;
+﻿using Boards;
+using Singletons;
 using UnityEngine;
-using World.Grids;
 
 namespace Cards
 {
@@ -36,7 +36,7 @@ namespace Cards
             Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
             Vector3 startPos = _camera.ScreenToWorldPoint(_origin.position);
 
-            Vector3 endPos = GridManager.Instance.TrySnapToCell(mouseWorldPos, out Vector3 cellPos) ? cellPos : mouseWorldPos;
+            Vector3 endPos = BoardManager.Instance.TrySnapToCell(mouseWorldPos, out Vector3 cellPos) ? cellPos : mouseWorldPos;
             endPos.z = _lineZOffset;
             
             _lineRenderer.SetPosition(0, startPos);
@@ -47,7 +47,7 @@ namespace Cards
         public bool TryGetCell(out Vector2Int cell)
         {
             Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
-            return GridManager.Instance.TryGetWorldToCell(mouseWorldPos, out cell);
+            return BoardManager.Instance.TryGetWorldToCell(mouseWorldPos, out cell);
         }
 
         /// <summary>

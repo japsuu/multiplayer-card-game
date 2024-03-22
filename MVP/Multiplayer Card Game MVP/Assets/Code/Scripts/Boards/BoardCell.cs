@@ -1,6 +1,10 @@
-﻿namespace World.Grids
+﻿namespace Boards
 {
-    public class GridCell
+    /// <summary>
+    /// In-memory representation of a cell on the board.
+    /// Contained in a <see cref="Board"/>.
+    /// </summary>
+    public class BoardCell
     {
         public readonly int X;
         public readonly int Y;
@@ -16,7 +20,7 @@
         public bool IsOccupied;
 
 
-        public GridCell(int x, int y, CellSide side)
+        public BoardCell(int x, int y, CellSide side)
         {
             X = x;
             Y = y;

@@ -2,6 +2,9 @@
 
 namespace Player
 {
+    /// <summary>
+    /// Represents a player character on the board.
+    /// </summary>
     public class PlayerCharacter : MonoBehaviour
     {
         public static PlayerCharacter LocalPlayer { get; private set; }

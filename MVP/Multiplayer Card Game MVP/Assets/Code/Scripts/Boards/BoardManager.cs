@@ -3,28 +3,28 @@ using Player;
 using Singletons;
 using UnityEngine;
 
-namespace World.Grids
+namespace Boards
 {
     /// <summary>
-    /// Manages the grid the gameplay happens on.<br/>
-    /// The grid is split into two parts: the player's side and the enemy's side.<br/>
+    /// Manages the board the gameplay happens on.<br/>
+    /// The board is split into two parts: the player's side and the enemy's side.<br/>
     /// Players cannot move to the enemy's side and vice versa.<br/>
     /// </summary>
-    [RequireComponent(typeof(GridRenderer))]
-    public class GridManager : SingletonBehaviour<GridManager>
+    [RequireComponent(typeof(BoardRenderer))]
+    public class BoardManager : SingletonBehaviour<BoardManager>
     {
         [Header("Grid")]
         
         [SerializeField]
         [Range(2, 12)]
-        private int _gridWidth = 8;
+        private int _boardWidth = 8;
 
         [SerializeField]
         [Range(2, 12)]
-        private int _gridHeight = 4;
+        private int _boardHeight = 5;
 
         [SerializeField]
-        [Tooltip("Instantiated on game start. Not visible when the cursor is not hovering over the grid. When hovering the cursor over a grid cell, this prefab is snapped to the grid cell and set visible.")]
+        [Tooltip("Instantiated on game start. Not visible when the cursor is not hovering over the board. When hovering the cursor over a board cell, this prefab is snapped to the board cell and set visible.")]
         private CellHighlighter _hoveredCellHighlightPrefab;
 
         [Header("Players")]
@@ -35,20 +35,84 @@ namespace World.Grids
         [SerializeField]
         private Vector2Int _playerSpawnPosition;
 
-        private GridRenderer _gridRenderer;
-        private GridData _grid;
+        private BoardRenderer _boardRenderer;
+        private Board _board;
         private CellHighlighter _hoveredCellHighlighter;
         private Camera _camera;
         private readonly List<Vector2Int> _availableMovementCells = new();
         private readonly List<Vector2Int> _blockedMovementCells = new();
+        
+        
+        /// <summary>
+        /// Tries to snap the given world position to the nearest board cell position.
+        /// </summary>
+        /// <param name="worldPos">The world position to snap to a board cell.</param>
+        /// <param name="cellPos">The snapped board cell position.</param>
+        /// <returns>If the world position was snapped to a board cell (if the position was within the board).</returns>
+        public bool TrySnapToCell(Vector3 worldPos, out Vector3 cellPos)
+        {
+            if (!TryGetWorldToCell(worldPos, out Vector2Int boardCellPos))
+            {
+                cellPos = Vector3.zero;
+                return false;
+            }
+
+            cellPos = _boardRenderer.CellToWorld(new Vector3Int(boardCellPos.x, boardCellPos.y, 0));
+            return true;
+        }
+
+
+        /// <summary>
+        /// Tries to get the board cell position from the given world position.
+        /// </summary>
+        /// <param name="worldPos">The world position to get the board cell position from.</param>
+        /// <param name="cellPos">The board cell position.</param>
+        /// <returns>If the world position was within the board.</returns>
+        public bool TryGetWorldToCell(Vector3 worldPos, out Vector2Int cellPos)
+        {
+            Vector3Int boardCellPos = _boardRenderer.WorldToCell(worldPos);
+            if (boardCellPos.x < 0 || boardCellPos.x >= _board.Width || boardCellPos.y < 0 || boardCellPos.y >= _board.Height)
+            {
+                cellPos = new Vector2Int(-1, -1);
+                return false;
+            }
+
+            cellPos = new Vector2Int(boardCellPos.x, boardCellPos.y);
+            return true;
+        }
+        
+        
+        /// <summary>
+        /// Inverse of <see cref="TryGetWorldToCell"/>.
+        /// </summary>
+        public bool TryGetCellToWorld(Vector2Int cellPos, out Vector3 worldPos)
+        {
+            if (cellPos.x < 0 || cellPos.x >= _board.Width || cellPos.y < 0 || cellPos.y >= _board.Height)
+            {
+                worldPos = Vector3.zero;
+                return false;
+            }
+
+            worldPos = _boardRenderer.CellToWorld(new Vector3Int(cellPos.x, cellPos.y, 0));
+            return true;
+        }
+        
+        
+        /// <summary>
+        /// Creates a new highlight group.
+        /// </summary>
+        public CellHighlightGroup CreateHighlightGroup()
+        {
+            return _boardRenderer.CreateHighlightGroup();
+        }
 
 
         private void Awake()
         {
             _camera = Camera.main;
-            _gridRenderer = GetComponent<GridRenderer>();
-            _grid = new GridData(_gridWidth, _gridHeight, _gridWidth / 2);
-            _gridRenderer.InitializeGrid(_grid);
+            _boardRenderer = GetComponent<BoardRenderer>();
+            _board = new Board(_boardWidth, _boardHeight, _boardWidth / 2);
+            _boardRenderer.InitializeGrid(_board);
         }
 
 
@@ -65,19 +129,19 @@ namespace World.Grids
 
         private void RepositionCamera()
         {
-            Vector3 gridCenter = new Vector3(_gridWidth / 2f, _gridHeight / 2f, -10f);
-            _camera.transform.position = gridCenter;
+            Vector3 boardCenter = new Vector3(_boardWidth / 2f, _boardHeight / 2f, -10f);
+            _camera.transform.position = boardCenter;
         }
 
 
         private void CreateLocalPlayer()
         {
-            Vector3 worldPosition = _gridRenderer.CellToWorld(new Vector3Int(_playerSpawnPosition.x, _playerSpawnPosition.y, 0));
+            Vector3 worldPosition = _boardRenderer.CellToWorld(new Vector3Int(_playerSpawnPosition.x, _playerSpawnPosition.y, 0));
             
             PlayerCharacter localPlayer = Instantiate(_playerPrefab, worldPosition, Quaternion.identity);
             PlayerCharacter.SetLocalPlayer(localPlayer);
             
-            _grid.SetCellOccupation(_playerSpawnPosition.x, _playerSpawnPosition.y, true);
+            _board.SetCellOccupation(_playerSpawnPosition.x, _playerSpawnPosition.y, true);
             localPlayer.SetGridPosition(_playerSpawnPosition, worldPosition);
         }
 
@@ -86,52 +150,6 @@ namespace World.Grids
         {
             UpdateHoveredCellHighlighter();
             CheckClickedCell();
-        }
-        
-        
-        public bool TrySnapToCell(Vector3 worldPos, out Vector3 cellPos)
-        {
-            if (!TryGetWorldToCell(worldPos, out Vector2Int gridCellPos))
-            {
-                cellPos = Vector3.zero;
-                return false;
-            }
-
-            cellPos = _gridRenderer.CellToWorld(new Vector3Int(gridCellPos.x, gridCellPos.y, 0));
-            return true;
-        }
-
-
-        public bool TryGetWorldToCell(Vector3 worldPos, out Vector2Int cellPos)
-        {
-            Vector3Int gridCellPos = _gridRenderer.WorldToCell(worldPos);
-            if (gridCellPos.x < 0 || gridCellPos.x >= _grid.Width || gridCellPos.y < 0 || gridCellPos.y >= _grid.Height)
-            {
-                cellPos = new Vector2Int(-1, -1);
-                return false;
-            }
-
-            cellPos = new Vector2Int(gridCellPos.x, gridCellPos.y);
-            return true;
-        }
-        
-        
-        public bool TryGetCellToWorld(Vector2Int cellPos, out Vector3 worldPos)
-        {
-            if (cellPos.x < 0 || cellPos.x >= _grid.Width || cellPos.y < 0 || cellPos.y >= _grid.Height)
-            {
-                worldPos = Vector3.zero;
-                return false;
-            }
-
-            worldPos = _gridRenderer.CellToWorld(new Vector3Int(cellPos.x, cellPos.y, 0));
-            return true;
-        }
-        
-        
-        public CellHighlightGroup CreateHighlightGroup()
-        {
-            return _gridRenderer.CreateHighlightGroup();
         }
 
 
@@ -167,9 +185,9 @@ namespace World.Grids
             // If a cell was clicked that can be moved to, move the player to that cell.
             if (_availableMovementCells.Contains(clickedCellPos))
             {
-                PlayerCharacter.LocalPlayer.SetGridPosition(clickedCellPos, _gridRenderer.CellToWorld(new Vector3Int(clickedCellPos.x, clickedCellPos.y, 0)));
-                _grid.SetCellOccupation(playerPos.x, playerPos.y, false);
-                _grid.SetCellOccupation(clickedCellPos.x, clickedCellPos.y, true);
+                PlayerCharacter.LocalPlayer.SetGridPosition(clickedCellPos, _boardRenderer.CellToWorld(new Vector3Int(clickedCellPos.x, clickedCellPos.y, 0)));
+                _board.SetCellOccupation(playerPos.x, playerPos.y, false);
+                _board.SetCellOccupation(clickedCellPos.x, clickedCellPos.y, true);
                 
                 StopHighlightCells();
                 return;
@@ -190,21 +208,21 @@ namespace World.Grids
                 Vector2Int cellPos = new(x, y);
                 
                 // Skip cells that are out of bounds.
-                if (x < 0 || x >= _grid.Width || y < 0 || y >= _grid.Height)
+                if (x < 0 || x >= _board.Width || y < 0 || y >= _board.Height)
                     continue;
                 
                 // Skip the cell the player is on.
                 if (cellPos == position)
                     continue;
 
-                if (_grid.IsCellOccupied(x, y) || _grid.GetCellSide(x, y) != CellSide.Player)
+                if (_board.IsCellOccupied(x, y) || _board.GetCellSide(x, y) != CellSide.Player)
                 {
-                    _gridRenderer.HighlightCell(cellPos, true);
+                    _boardRenderer.HighlightCell(cellPos, true);
                     _blockedMovementCells.Add(cellPos);
                 }
                 else
                 {
-                    _gridRenderer.HighlightCell(cellPos, false);
+                    _boardRenderer.HighlightCell(cellPos, false);
                     _availableMovementCells.Add(cellPos);
                 }
             }
@@ -213,7 +231,7 @@ namespace World.Grids
 
         private void StopHighlightCells()
         {
-            _gridRenderer.StopHighlightCells();
+            _boardRenderer.StopHighlightCells();
             _availableMovementCells.Clear();
             _blockedMovementCells.Clear();
         }
@@ -222,14 +240,14 @@ namespace World.Grids
         private void UpdateHoveredCellHighlighter()
         {
             Vector3 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int cellPos = _gridRenderer.WorldToCell(mousePos);
-            if (cellPos.x < 0 || cellPos.x >= _grid.Width || cellPos.y < 0 || cellPos.y >= _grid.Height)
+            Vector3Int cellPos = _boardRenderer.WorldToCell(mousePos);
+            if (cellPos.x < 0 || cellPos.x >= _board.Width || cellPos.y < 0 || cellPos.y >= _board.Height)
             {
                 _hoveredCellHighlighter.gameObject.SetActive(false);
                 return;
             }
 
-            Vector3 cellWorldPos = _gridRenderer.CellToWorld(cellPos);
+            Vector3 cellWorldPos = _boardRenderer.CellToWorld(cellPos);
             _hoveredCellHighlighter.transform.position = cellWorldPos;
             _hoveredCellHighlighter.gameObject.SetActive(true);
         }
@@ -255,23 +273,23 @@ namespace World.Grids
             Vector3 origin = transform.position;
 
             Gizmos.color = Color.white;
-            for (float x = 0; x <= _gridWidth; x++)
+            for (float x = 0; x <= _boardWidth; x++)
             {
                 Vector3 start = origin + new Vector3(x, 0f, 0f);
-                Gizmos.DrawLine(start, start + Vector3.up * _gridHeight);
+                Gizmos.DrawLine(start, start + Vector3.up * _boardHeight);
             }
 
-            for (float y = 0; y <= _gridHeight; y++)
+            for (float y = 0; y <= _boardHeight; y++)
             {
                 Vector3 start = origin + new Vector3(0f, y, 0f);
-                Gizmos.DrawLine(start, start + Vector3.right * _gridWidth);
+                Gizmos.DrawLine(start, start + Vector3.right * _boardWidth);
             }
             
             // Draw a yellow dividing line between the player and enemy sides.
             Gizmos.color = Color.yellow;
             // ReSharper disable once PossibleLossOfFraction
-            Vector3 divStart = origin + new Vector3(_gridWidth / 2, -1, 0f);
-            Vector3 divEnd = divStart + Vector3.up * (_gridHeight + 2);
+            Vector3 divStart = origin + new Vector3(_boardWidth / 2, -1, 0f);
+            Vector3 divEnd = divStart + Vector3.up * (_boardHeight + 2);
             Gizmos.DrawLine(divStart, divEnd);
         }
     }
