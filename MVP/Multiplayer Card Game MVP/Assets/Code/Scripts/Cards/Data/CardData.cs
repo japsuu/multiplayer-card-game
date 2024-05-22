@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using Boards;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Cards.Data
 {
@@ -19,39 +17,48 @@ namespace Cards.Data
         [SerializeField]
         private Sprite _sprite;
 
-        [FormerlySerializedAs("_playType")]
-        [SerializeField]
-        private CardPlayTarget _playTarget;
-
         [SerializeField]
         private int _manaCost;
+        
         public string CardName => _cardName;
         public string Description => _description;
         public Sprite Sprite => _sprite;
         public int ManaCost => _manaCost;
-        public CardPlayTarget PlayTarget => _playTarget;
+
+
+        /// <summary>
+        /// Called when the user has played the card.
+        /// </summary>
+        /// <param name="cell">The cell the user has dropped the card on.</param>
+        /// <returns></returns>
+        public IEnumerator Play(Vector2Int cell)
+        {
+            yield return OnPlay(cell);
+        }
         
         
         /// <summary>
         /// Called when the user has started to drag the card.
-        /// Used to initialize the highlighter group to e.g. show the damage area of the card.
         /// </summary>
-        /// <param name="highlighterGroup"></param>
-        public virtual void BuildHighlighter(CellHighlightGroup highlighterGroup) { }
+        public virtual void OnStartDrag(CardInstance draggedCard) { }
+        
         
         /// <summary>
         /// Called when the user is dragging the card.
-        /// Used to update the data of the highlighter group.
         /// </summary>
-        /// <param name="highlighterGroup">The highlighter group to update.</param>
-        /// <param name="currentCell">The current cell the user is dragging the card over.</param>
-        public virtual void UpdateHighlighter(CellHighlightGroup highlighterGroup, Vector2Int currentCell) { }
+        public virtual void OnDrag(CardInstance draggedCard) { }
+        
+        
+        /// <summary>
+        /// Called when the user has stopped dragging the card.
+        /// </summary>
+        public virtual void OnEndDrag(CardInstance draggedCard) { }
         
         /// <summary>
         /// Called when the user has played the card.
         /// </summary>
         /// <param name="cell">The cell the user has dropped the card on.</param>
         /// <returns></returns>
-        public abstract IEnumerator OnPlay(Vector2Int cell);
+        protected abstract IEnumerator OnPlay(Vector2Int cell);
     }
 }

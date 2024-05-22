@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cards.Data;
+using Singletons;
 using UnityEngine;
 
 namespace Cards
 {
-    public class PlayerHandManager : MonoBehaviour
+    public class PlayerHandManager : SingletonBehaviour<PlayerHandManager>
     {
         [Header("General")]
         
@@ -45,7 +45,7 @@ namespace Cards
         public void AddCardToHand(CardData cardData)
         {
             CardInstance card = Instantiate(_cardPrefab, _cardRoot);
-            card.Initialize(cardData, this);
+            card.Initialize(cardData);
             _hand.Cards.Add(card);
         }
 
@@ -70,7 +70,7 @@ namespace Cards
             if (!Input.GetKeyDown(KeyCode.P))
                 return;
             
-            CardData randomCard = _spawnableRandomCards[UnityEngine.Random.Range(0, _spawnableRandomCards.Count)];
+            CardData randomCard = _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
             AddCardToHand(randomCard);
             Debug.Log($"Added random card '{randomCard.CardName}' to hand.");
         }
@@ -96,9 +96,9 @@ namespace Cards
         }
 
 
-        public void OnCardPlayed(CardInstance cardInstance, Vector2Int cell)
+        public void PlayCard(CardInstance cardInstance, Vector2Int cell)
         {
-            StartCoroutine(cardInstance.Data.OnPlay(cell));
+            StartCoroutine(cardInstance.Data.Play(cell));
             
             _hand.Cards.Remove(cardInstance);
             Destroy(cardInstance.gameObject);

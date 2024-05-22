@@ -1,5 +1,4 @@
-﻿using System;
-using Boards;
+﻿using Boards;
 using Cards.Data;
 using TMPro;
 using UnityEngine;
@@ -26,18 +25,17 @@ namespace Cards
         [SerializeField]
         private Image _artImage;
         
-        private PlayerHandManager _playerHandManager;
         private Vector3 _homePosition;
         private bool _isBeingDragged;
-        private CellHighlightGroup _highlighter;
+        
+        [HideInInspector] public CellHighlightGroup Highlighter;
         
         public CardData Data { get; private set; }
 
 
-        public void Initialize(CardData data, PlayerHandManager playerHandManager)
+        public void Initialize(CardData data)
         {
             Data = data;
-            _playerHandManager = playerHandManager;
             
             _nameText.text = data.CardName;
             _manaCostText.text = data.ManaCost.ToString();
@@ -54,11 +52,7 @@ namespace Cards
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (Data.PlayTarget == CardPlayTarget.Cell)
-                TargetingArrow.Instance.Activate(transform);
-
-            _highlighter = BoardManager.Instance.CreateHighlightGroup();
-            Data.BuildHighlighter(_highlighter);
+            Data.OnStartDrag(this);
             
             _isBeingDragged = true;
         }
@@ -68,21 +62,8 @@ namespace Cards
         {
             if (!_isBeingDragged)
                 return;
-
-            if (TargetingArrow.Instance.TryGetCell(out Vector2Int cell))
-            {
-                BoardManager.Instance.TryGetCellToWorld(cell, out Vector3 pos);
-                _highlighter.transform.position = pos;
-                _highlighter.gameObject.SetActive(true);
-            }
-            else
-            {
-                _highlighter.gameObject.SetActive(false);
-            }
-            Data.UpdateHighlighter(_highlighter, cell);
             
-            if (Data.PlayTarget == CardPlayTarget.Anywhere)
-                transform.position = eventData.position;
+            Data.OnDrag(this);
         }
 
 
@@ -93,22 +74,7 @@ namespace Cards
             if (!_isBeingDragged)
                 return;
             
-            switch (Data.PlayTarget)
-            {
-                case CardPlayTarget.Cell:
-                {
-                    if (TargetingArrow.Instance.TryGetCell(out Vector2Int cell))
-                        _playerHandManager.OnCardPlayed(this, cell);
-                
-                    TargetingArrow.Instance.Deactivate();
-                    break;
-                }
-                case CardPlayTarget.Anywhere:
-                    _playerHandManager.OnCardPlayed(this, Vector2Int.zero);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            Data.OnEndDrag(this);
             
             _isBeingDragged = false;
         }
@@ -118,14 +84,12 @@ namespace Cards
         {
             if (_isBeingDragged)
             {
-                if (Input.GetMouseButtonDown(1))
-                {
-                    _isBeingDragged = false;
+                if (!Input.GetMouseButtonDown(1))
+                    return;
+                
+                _isBeingDragged = false;
 
-                    if (Data.PlayTarget == CardPlayTarget.Cell)
-                        TargetingArrow.Instance.Deactivate();
-                    DestroyHighlighter();
-                }
+                DestroyHighlighter();
                 return;
             }
             
@@ -135,11 +99,11 @@ namespace Cards
 
         private void DestroyHighlighter()
         {
-            if (_highlighter == null)
+            if (Highlighter == null)
                 return;
             
-            Destroy(_highlighter.gameObject);
-            _highlighter = null;
+            Destroy(Highlighter.gameObject);
+            Highlighter = null;
         }
 
 
