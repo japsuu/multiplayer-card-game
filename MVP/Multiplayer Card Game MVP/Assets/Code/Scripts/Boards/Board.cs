@@ -38,10 +38,11 @@ namespace Boards
         /// </summary>
         /// <param name="width">The width of the board in cells.</param>
         /// <param name="height">The height of the board in cells.</param>
-        /// <param name="playerCellsWidth">How many cells from the left side of the board are the player's cells.</param>
-        public Board(int width, int height, int playerCellsWidth)
+        /// <param name="playerCellsLength">How many cells from the bottom-left of the board are the player's cells.</param>
+        /// <param name="enemyBoardSide">Where on the board the enemy's cells are.</param>
+        public Board(int width, int height, int playerCellsLength, EnemyBoardSide enemyBoardSide)
         {
-            Resize(width, height, playerCellsWidth);
+            Resize(width, height, playerCellsLength, enemyBoardSide);
         }
         
         
@@ -50,12 +51,13 @@ namespace Boards
         /// </summary>
         /// <param name="width">The width of the board in cells.</param>
         /// <param name="height">The height of the board in cells.</param>
-        /// <param name="playerCellsWidth">How many cells from the left side of the board are the player's cells.</param>
-        public void Resize(int width, int height, int playerCellsWidth)
+        /// <param name="playerCellsLength">How many cells from the bottom-left of the board are the player's cells.</param>
+        /// <param name="enemyBoardSide">Where on the board the enemy's cells are.</param>
+        public void Resize(int width, int height, int playerCellsLength, EnemyBoardSide enemyBoardSide)
         {
             Width = width;
             Height = height;
-            InitializeGrid(width, height, playerCellsWidth);
+            InitializeGrid(width, height, playerCellsLength, enemyBoardSide);
         }
         
         
@@ -90,14 +92,15 @@ namespace Boards
         }
 
 
-        private void InitializeGrid(int width, int height, int playerCellsWidth)
+        private void InitializeGrid(int width, int height, int playerCellsLength, EnemyBoardSide enemyBoardSide)
         {
             _boardCells = new BoardCell[width, height];
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
                 {
-                    CellSide side = x < playerCellsWidth ? CellSide.Player : CellSide.Enemy;
+                    int cellLength = enemyBoardSide == EnemyBoardSide.Top ? y : x;
+                    CellSide side = cellLength < playerCellsLength ? CellSide.Player : CellSide.Enemy;
                     _boardCells[x, y] = new BoardCell(x, y, side);
                 }
             }

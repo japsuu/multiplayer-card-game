@@ -13,7 +13,7 @@ namespace Boards
     [RequireComponent(typeof(BoardRenderer))]
     public class BoardManager : SingletonBehaviour<BoardManager>
     {
-        [Header("Grid")]
+        [Header("Board")]
         
         [SerializeField]
         [Range(2, 12)]
@@ -22,6 +22,9 @@ namespace Boards
         [SerializeField]
         [Range(2, 12)]
         private int _boardHeight = 5;
+
+        [SerializeField]
+        private EnemyBoardSide _enemySide = EnemyBoardSide.Top;
 
         [SerializeField]
         [Tooltip("Instantiated on game start. Not visible when the cursor is not hovering over the board. When hovering the cursor over a board cell, this prefab is snapped to the board cell and set visible.")]
@@ -111,7 +114,10 @@ namespace Boards
         {
             _camera = Camera.main;
             _boardRenderer = GetComponent<BoardRenderer>();
-            _board = new Board(_boardWidth, _boardHeight, _boardWidth / 2);
+            
+            int length = _enemySide == EnemyBoardSide.Top ? _boardHeight / 2 : _boardWidth / 2;
+            _board = new Board(_boardWidth, _boardHeight, length, _enemySide);
+            
             _boardRenderer.InitializeGrid(_board);
         }
 
@@ -129,7 +135,9 @@ namespace Boards
 
         private void RepositionCamera()
         {
-            Vector3 boardCenter = new Vector3(_boardWidth / 2f, _boardHeight / 2f, -10f);
+            Vector3 boardCenter = _enemySide == EnemyBoardSide.Top
+                ? new Vector3(0f, _boardHeight / 2f, -10f)
+                : new Vector3(_boardWidth / 2f, 0f, -10f);
             _camera.transform.position = boardCenter;
         }
 
@@ -271,6 +279,9 @@ namespace Boards
         private void DrawGridGizmos()
         {
             Vector3 origin = transform.position;
+            int sideLength = _enemySide == EnemyBoardSide.Top ? _boardHeight : _boardWidth;
+            int crossLength = _enemySide == EnemyBoardSide.Top ? _boardWidth : _boardHeight;
+            int playerSideLength = sideLength / 2;
 
             Gizmos.color = Color.white;
             for (float x = 0; x <= _boardWidth; x++)
@@ -287,9 +298,12 @@ namespace Boards
             
             // Draw a yellow dividing line between the player and enemy sides.
             Gizmos.color = Color.yellow;
-            // ReSharper disable once PossibleLossOfFraction
-            Vector3 divStart = origin + transform.right * (_boardWidth / 2) - transform.up;
-            Vector3 divEnd = divStart + transform.up * (_boardHeight + 2);
+
+            Vector3 boardSideDirection = _enemySide == EnemyBoardSide.Top ? transform.up : transform.right;
+            Vector3 boardCrossDirection = _enemySide == EnemyBoardSide.Top ? transform.right : transform.up;
+
+            Vector3 divStart = origin + boardSideDirection * playerSideLength - boardCrossDirection;
+            Vector3 divEnd = divStart + boardCrossDirection * (crossLength + 2);
             Gizmos.DrawLine(divStart, divEnd);
         }
     }
