@@ -1,5 +1,4 @@
-﻿using System;
-using DamageSystem;
+﻿using DamageSystem;
 using Player;
 using TMPro;
 using UnityEngine;

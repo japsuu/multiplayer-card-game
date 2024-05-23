@@ -25,7 +25,7 @@ namespace Cards.Data
             
             // Add highlighters for each cell in the attack pattern.
             foreach (Vector2Int relativePosition in _attackPattern.GetCells(Vector2Int.zero))
-                highlighterGroup.AddRelativeHighlighter(relativePosition, Color.red);
+                highlighterGroup.AddRelativeHighlighter(relativePosition, Color.yellow);
             
             // Assign the highlighter group to the dragged card.
             draggedCard.Highlighter = highlighterGroup;

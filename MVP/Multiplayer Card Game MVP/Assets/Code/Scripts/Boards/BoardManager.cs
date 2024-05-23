@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cameras;
 using Player;
 using Singletons;
 using UnityEngine;
@@ -37,7 +38,6 @@ namespace Boards
         private BoardRenderer _boardRenderer;
         private Board _board;
         private CellHighlighter _hoveredCellHighlighter;
-        private Camera _camera;
         private readonly List<Vector2Int> _availableMovementCells = new();
         private readonly List<Vector2Int> _blockedMovementCells = new();
         
@@ -87,7 +87,7 @@ namespace Boards
                 cellPos = new Vector2Int(-1, -1);
                 return false;
             }
-
+            
             cellPos = new Vector2Int(boardCellPos.x, boardCellPos.y);
             return true;
         }
@@ -120,7 +120,6 @@ namespace Boards
 
         private void Awake()
         {
-            _camera = Camera.main;
             _boardRenderer = GetComponent<BoardRenderer>();
             
             int length = _enemySide == EnemyBoardSide.Top ? _boardHeight / 2 : _boardWidth / 2;
@@ -135,18 +134,15 @@ namespace Boards
             _hoveredCellHighlighter = Instantiate(_hoveredCellHighlightPrefab, transform);
             _hoveredCellHighlighter.gameObject.SetActive(false);
 
-            RepositionCamera();
+            SetCameraOrigin();
 
             CreateLocalPlayer();
         }
 
 
-        private void RepositionCamera()
+        private void SetCameraOrigin()
         {
-            Vector3 boardCenter = _enemySide == EnemyBoardSide.Top
-                ? new Vector3(0f, _boardHeight / 2f, -10f)
-                : new Vector3(_boardWidth / 2f, 0f, -10f);
-            _camera.transform.position = boardCenter;
+            CameraController.Instance.SetOrigin(new Vector2(_boardWidth / 2f, _boardHeight / 2f));
         }
 
 
@@ -177,7 +173,7 @@ namespace Boards
             if (!Input.GetMouseButtonDown(0))
                 return;
             
-            Vector3 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePos = CameraController.Instance.Camera.ScreenToWorldPoint(Input.mousePosition);
             if (!TryGetWorldToCell(mousePos, out Vector2Int cellPos))
                 return;
             
@@ -255,7 +251,7 @@ namespace Boards
 
         private void UpdateHoveredCellHighlighter()
         {
-            Vector3 mousePos = _camera.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePos = CameraController.Instance.Camera.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int cellPos = _boardRenderer.WorldToCell(mousePos);
             if (cellPos.x < 0 || cellPos.x >= _board.Width || cellPos.y < 0 || cellPos.y >= _board.Height)
             {

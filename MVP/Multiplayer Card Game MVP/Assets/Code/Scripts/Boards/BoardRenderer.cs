@@ -14,13 +14,16 @@ namespace Boards
         private Tilemap _renderTilemap;
 
         [SerializeField]
-        private Tile _playerCellTile;
+        private Tile _playerCellTile1;
 
         [SerializeField]
-        private Tile _enemyCellTile;
+        private Tile _playerCellTile2;
 
         [SerializeField]
-        private Tile _baseCellTile;
+        private Tile _enemyCellTile1;
+
+        [SerializeField]
+        private Tile _enemyCellTile2;
 
         [Header("Cell highlighting")]
         
@@ -117,13 +120,12 @@ namespace Boards
 
         private Tile DetermineTileType(int x, int y)
         {
-            bool isBaseCell = (x + y) % 2 == 0;
-            if (isBaseCell)
-                return _baseCellTile;
-
             bool isPlayer = _board.GetCellSide(x, y) == CellSide.Player;
             
-            return isPlayer ? _playerCellTile : _enemyCellTile;
+            bool alternator = (x + y) % 2 == 0;
+            if (isPlayer)
+                return alternator ? _playerCellTile1 : _playerCellTile2;
+            return alternator ? _enemyCellTile1 : _enemyCellTile2;
         }
     }
 }
