@@ -21,11 +21,12 @@ namespace Cards.Data
         }
 
 
-        public override void OnEndDrag(CardInstance draggedCard)
+        public override void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard)
         {
-            base.OnEndDrag(draggedCard);
+            base.OnEndDrag(draggedCard, shouldPlayCard);
             
-            PlayerHandManager.Instance.PlayCard(draggedCard, Vector2Int.zero);
+            if (shouldPlayCard)
+                PlayerHandManager.Instance.PlayCard(draggedCard, Vector2Int.zero);
         }
     }
 }

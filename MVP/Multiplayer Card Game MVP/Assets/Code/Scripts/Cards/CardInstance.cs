@@ -74,8 +74,7 @@ namespace Cards
             if (!_isBeingDragged)
                 return;
             
-            Data.OnEndDrag(this);
-            
+            Data.OnEndDrag(this, true);
             _isBeingDragged = false;
         }
 
@@ -86,7 +85,8 @@ namespace Cards
             {
                 if (!Input.GetMouseButtonDown(1))
                     return;
-                
+            
+                Data.OnEndDrag(this, false);
                 _isBeingDragged = false;
 
                 DestroyHighlighter();

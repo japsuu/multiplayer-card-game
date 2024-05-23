@@ -52,7 +52,7 @@ namespace Cards.Data
         /// <summary>
         /// Called when the user has stopped dragging the card.
         /// </summary>
-        public virtual void OnEndDrag(CardInstance draggedCard) { }
+        public virtual void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard) { }
         
         /// <summary>
         /// Called when the user has played the card.

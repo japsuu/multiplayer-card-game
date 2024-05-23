@@ -50,14 +50,12 @@ namespace Cards.Data
         }
 
 
-        public override void OnEndDrag(CardInstance draggedCard)
+        public override void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard)
         {
-            base.OnEndDrag(draggedCard);
+            base.OnEndDrag(draggedCard, shouldPlayCard);
             
-            if (TargetingArrow.Instance.TryGetCell(out Vector2Int cell))
-            {
+            if (shouldPlayCard && TargetingArrow.Instance.TryGetCell(out Vector2Int cell))
                 PlayerHandManager.Instance.PlayCard(draggedCard, cell);
-            }
             
             TargetingArrow.Instance.Deactivate();
         }
