@@ -1323,8 +1323,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64e8291046f6474e99d958d6246311a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gridWidth: 8
-  _gridHeight: 5
+  _boardWidth: 8
+  _boardHeight: 5
   _hoveredCellHighlightPrefab: {fileID: 5114997266451876714, guid: 973de5c1c394dac44a58e1afb0994773, type: 3}
   _playerPrefab: {fileID: 6473087916945138897, guid: 80114b65ea7ea9e44967448b9c4cb966, type: 3}
   _playerSpawnPosition: {x: 1, y: 2}

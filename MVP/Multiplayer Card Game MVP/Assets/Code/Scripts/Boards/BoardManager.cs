@@ -275,21 +275,21 @@ namespace Boards
             Gizmos.color = Color.white;
             for (float x = 0; x <= _boardWidth; x++)
             {
-                Vector3 start = origin + new Vector3(x, 0f, 0f);
-                Gizmos.DrawLine(start, start + Vector3.up * _boardHeight);
+                Vector3 start = origin + transform.right * x;
+                Gizmos.DrawLine(start, start + transform.up * _boardHeight);
             }
 
             for (float y = 0; y <= _boardHeight; y++)
             {
-                Vector3 start = origin + new Vector3(0f, y, 0f);
-                Gizmos.DrawLine(start, start + Vector3.right * _boardWidth);
+                Vector3 start = origin + transform.up * y;
+                Gizmos.DrawLine(start, start + transform.right * _boardWidth);
             }
             
             // Draw a yellow dividing line between the player and enemy sides.
             Gizmos.color = Color.yellow;
             // ReSharper disable once PossibleLossOfFraction
-            Vector3 divStart = origin + new Vector3(_boardWidth / 2, -1, 0f);
-            Vector3 divEnd = divStart + Vector3.up * (_boardHeight + 2);
+            Vector3 divStart = origin + transform.right * (_boardWidth / 2) - transform.up;
+            Vector3 divEnd = divStart + transform.up * (_boardHeight + 2);
             Gizmos.DrawLine(divStart, divEnd);
         }
     }
