@@ -31,12 +31,8 @@ namespace Boards
         private CellHighlighter _hoveredCellHighlightPrefab;
 
         [Header("Players")]
-        
-        [SerializeField]
-        private PlayerCharacter _playerPrefab;
-        
-        [SerializeField]
-        private Vector2Int _playerSpawnPosition;
+        [SerializeField] private PlayerCharacter _playerPrefab;
+        [SerializeField] private Vector2Int _playerSpawnPosition;
 
         private BoardRenderer _boardRenderer;
         private Board _board;
@@ -46,6 +42,18 @@ namespace Boards
         private readonly List<Vector2Int> _blockedMovementCells = new();
         
         
+        public bool TryGetCell(Vector2Int pos, out BoardCell cell)
+        {
+            return TryGetCell(pos.x, pos.y, out cell);
+        }
+        
+        
+        public bool TryGetCell(int x, int y, out BoardCell cell)
+        {
+            return _board.TryGetCell(x, y, out cell);
+        }
+
+
         /// <summary>
         /// Tries to snap the given world position to the nearest board cell position.
         /// </summary>
@@ -149,7 +157,7 @@ namespace Boards
             PlayerCharacter localPlayer = Instantiate(_playerPrefab, worldPosition, Quaternion.identity);
             PlayerCharacter.SetLocalPlayer(localPlayer);
             
-            _board.SetCellOccupation(_playerSpawnPosition.x, _playerSpawnPosition.y, true);
+            _board.SetCellOccupation(_playerSpawnPosition.x, _playerSpawnPosition.y, localPlayer);
             localPlayer.SetGridPosition(_playerSpawnPosition, worldPosition);
         }
 
@@ -194,8 +202,8 @@ namespace Boards
             if (_availableMovementCells.Contains(clickedCellPos))
             {
                 PlayerCharacter.LocalPlayer.SetGridPosition(clickedCellPos, _boardRenderer.CellToWorld(new Vector3Int(clickedCellPos.x, clickedCellPos.y, 0)));
-                _board.SetCellOccupation(playerPos.x, playerPos.y, false);
-                _board.SetCellOccupation(clickedCellPos.x, clickedCellPos.y, true);
+                _board.SetCellOccupation(playerPos.x, playerPos.y, null);
+                _board.SetCellOccupation(clickedCellPos.x, clickedCellPos.y, PlayerCharacter.LocalPlayer);
                 
                 StopHighlightCells();
                 return;

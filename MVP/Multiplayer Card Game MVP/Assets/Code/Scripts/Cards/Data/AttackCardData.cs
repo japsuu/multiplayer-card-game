@@ -11,6 +11,9 @@ namespace Cards.Data
         [SerializeField]
         private GridPattern _attackPattern;
 
+        [SerializeField]
+        private int _damage = 10;
+
 
         public override void OnStartDrag(CardInstance draggedCard)
         {
@@ -63,7 +66,13 @@ namespace Cards.Data
         
         protected override IEnumerator OnPlay(Vector2Int cell)
         {
-            Debug.LogWarning("TODO: Implement card logic.");
+            foreach (Vector2Int damagedPos in _attackPattern.GetCells(cell))
+            {
+                if (BoardManager.Instance.TryGetCell(damagedPos, out BoardCell damagedCell))
+                {
+                    damagedCell.Occupant?.Damageable?.TakeDamage(_damage);
+                }
+            }
             yield break;
         }
     }

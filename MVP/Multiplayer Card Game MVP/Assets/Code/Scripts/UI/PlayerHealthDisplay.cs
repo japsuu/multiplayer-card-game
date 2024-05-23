@@ -20,17 +20,36 @@ namespace UI
 
         private void OnEnable()
         {
-            PlayerHealth health = PlayerCharacter.LocalPlayer.Health;
-            health.HealthChanged += OnHealthChanged;
+            PlayerCharacter.LocalPlayerCreated += SubscribeToHealthUpdates;
+            PlayerCharacter.LocalPlayerDestroyed += OnLocalPlayerDestroyed;
             
-            _maxHealth = health.MaxHealth;
-            Refresh(health.CurrentHealth);
+            if (PlayerCharacter.LocalPlayer != null)
+                SubscribeToHealthUpdates(PlayerCharacter.LocalPlayer);
         }
-        
-        
-        private void OnDisable()
+
+
+        private void OnLocalPlayerDestroyed()
         {
             PlayerCharacter.LocalPlayer.Health.HealthChanged -= OnHealthChanged;
+        }
+
+
+        private void SubscribeToHealthUpdates(PlayerCharacter player)
+        {
+            player.Health.HealthChanged += OnHealthChanged;
+            
+            _maxHealth = player.Health.MaxHealth;
+            Refresh(player.Health.CurrentHealth);
+        }
+
+
+        private void OnDisable()
+        {
+            PlayerCharacter.LocalPlayerCreated -= SubscribeToHealthUpdates;
+            PlayerCharacter.LocalPlayerDestroyed -= OnLocalPlayerDestroyed;
+            
+            if (PlayerCharacter.LocalPlayer != null)
+                PlayerCharacter.LocalPlayer.Health.HealthChanged -= OnHealthChanged;
         }
 
 
@@ -42,8 +61,8 @@ namespace UI
 
         private void Refresh(int newHealth)
         {
-            _slider.value = newHealth;
             _slider.maxValue = _maxHealth;
+            _slider.value = newHealth;
             _text.text = $"{newHealth}/{_maxHealth} hp";
         }
     }

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using Boards;
+using DamageSystem;
+using UnityEngine;
 
 namespace Player
 {
@@ -6,9 +9,12 @@ namespace Player
     /// Represents a player character on the board.
     /// </summary>
     [RequireComponent(typeof(PlayerHealth))]
-    public class PlayerCharacter : MonoBehaviour
+    public class PlayerCharacter : MonoBehaviour, ICellOccupant
     {
         public static PlayerCharacter LocalPlayer { get; private set; }
+        
+        public static event Action<PlayerCharacter> LocalPlayerCreated;
+        public static event Action LocalPlayerDestroyed;
         
         [SerializeField]
         [Range(1, 5)]
@@ -19,6 +25,7 @@ namespace Player
         
         public bool IsLocalPlayer => this == LocalPlayer;
         public int MovementRange => _movementRange;
+        public IDamageable Damageable => Health;
 
 
         private void Awake()
@@ -37,6 +44,17 @@ namespace Player
         public static void SetLocalPlayer(PlayerCharacter player)
         {
             LocalPlayer = player;
+            LocalPlayerCreated?.Invoke(player);
+        }
+
+
+        private void OnDestroy()
+        {
+            if (!IsLocalPlayer)
+                return;
+            
+            LocalPlayerDestroyed?.Invoke();
+            LocalPlayer = null;
         }
     }
 }

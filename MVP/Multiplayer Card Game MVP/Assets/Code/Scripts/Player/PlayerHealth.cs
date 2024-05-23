@@ -1,5 +1,6 @@
 ﻿using System;
 using DamageSystem;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace Player
@@ -12,21 +13,30 @@ namespace Player
         [SerializeField]
         private int _maxHealth = 100;
 
-        public int CurrentHealth { get; private set; }
+        [SerializeField]
+        [ReadOnly]
+        private int _currentHealth;
+
+        [SerializeField]
+        [ReadOnly]
+        private bool _isDead;
+
+        public int CurrentHealth => _currentHealth;
         
+        public bool IsDead => _isDead;
         public int MaxHealth => _maxHealth;
         
         
-        private void Start()
+        private void Awake()
         {
-            CurrentHealth = _maxHealth;
+            _currentHealth = _maxHealth;
         }
         
         
         public void TakeDamage(int damage)
         {
             int previousHealth = CurrentHealth;
-            CurrentHealth -= damage;
+            _currentHealth -= damage;
             
             if (CurrentHealth <= 0)
                 Die();
@@ -44,8 +54,9 @@ namespace Player
         private void Die()
         {
             int previousHealth = CurrentHealth;
-            CurrentHealth = 0;
-            Debug.Log("Player died!");
+            _currentHealth = 0;
+            _isDead = true;
+            Debug.LogWarning("Player died!");
             
             HealthChanged?.Invoke(new HealthChangedArgs(previousHealth, CurrentHealth));
             Died?.Invoke();

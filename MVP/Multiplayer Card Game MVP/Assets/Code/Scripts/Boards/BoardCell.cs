@@ -15,9 +15,9 @@
         public readonly CellSide Side;
         
         /// <summary>
-        /// Whether the cell is occupied by a character or not.
+        /// The occupant of the cell.
         /// </summary>
-        public bool IsOccupied;
+        public ICellOccupant Occupant;
 
 
         public BoardCell(int x, int y, CellSide side)

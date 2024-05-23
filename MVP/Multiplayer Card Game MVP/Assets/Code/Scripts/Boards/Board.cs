@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Boards
@@ -16,9 +17,9 @@ namespace Boards
         
         /// <summary>
         /// Called when the contents of a cell have changed.
-        /// Arguments: The coordinates of the changed cell, and whether the cell is now occupied or not.
+        /// Arguments: The coordinates of the changed cell, and the new occupant of the cell.
         /// </summary>
-        public event Action<Vector2Int, bool> OnCellOccupationChanged;
+        public event Action<Vector2Int, ICellOccupant> OnCellOccupationChanged;
         
         /// <summary>
         /// Width of the board in cells.
@@ -46,6 +47,33 @@ namespace Boards
         }
         
         
+        public bool TryGetCell(int x, int y, out BoardCell cell)
+        {
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+            {
+                cell = null;
+                return false;
+            }
+            
+            cell = _boardCells[x, y];
+            return true;
+        }
+        
+        
+        /// <returns>If a cell is occupied or not.</returns>
+        public bool IsCellOccupied(int x, int y)
+        {
+            return _boardCells[x, y].Occupant != null;
+        }
+        
+        
+        /// <returns>The side of the grid the cell is on - player or enemy.</returns>
+        public CellSide GetCellSide(int x, int y)
+        {
+            return _boardCells[x, y].Side;
+        }
+        
+        
         /// <summary>
         /// Resizes the board.
         /// </summary>
@@ -59,36 +87,22 @@ namespace Boards
             Height = height;
             InitializeGrid(width, height, playerCellsLength, enemyBoardSide);
         }
-        
-        
+
+
         /// <summary>
         /// Sets the occupation of a cell (if it contains something or not).
         /// </summary>
         /// <param name="x">The x-coordinate of the cell.</param>
         /// <param name="y">The y-coordinate of the cell.</param>
-        /// <param name="isOccupied">If the cell is occupied or not.</param>
-        public void SetCellOccupation(int x, int y, bool isOccupied)
+        /// <param name="occupant">The new occupant of the cell.</param>
+        public void SetCellOccupation(int x, int y, [CanBeNull] ICellOccupant occupant)
         {
-            if (_boardCells[x, y].IsOccupied == isOccupied)
+            if (_boardCells[x, y].Occupant == occupant)
                 return;
             
-            _boardCells[x, y].IsOccupied = isOccupied;
+            _boardCells[x, y].Occupant = occupant;
             
-            OnCellOccupationChanged?.Invoke(new Vector2Int(x, y), isOccupied);
-        }
-        
-        
-        /// <returns>If a cell is occupied or not.</returns>
-        public bool IsCellOccupied(int x, int y)
-        {
-            return _boardCells[x, y].IsOccupied;
-        }
-        
-        
-        /// <returns>The side of the grid the cell is on - player or enemy.</returns>
-        public CellSide GetCellSide(int x, int y)
-        {
-            return _boardCells[x, y].Side;
+            OnCellOccupationChanged?.Invoke(new Vector2Int(x, y), occupant);
         }
 
 
