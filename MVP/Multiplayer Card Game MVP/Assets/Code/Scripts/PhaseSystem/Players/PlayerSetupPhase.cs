@@ -13,7 +13,7 @@ namespace PhaseSystem.Players
         public override string Name => "Setup Phase";
         
         
-        public override IEnumerator Execute()
+        protected sealed override IEnumerator OnExecute()
         {
             yield return null;
         }

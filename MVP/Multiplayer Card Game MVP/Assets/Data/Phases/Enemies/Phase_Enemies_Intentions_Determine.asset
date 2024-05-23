@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 658475f0d0904401b5474779df5a3f67, type: 3}
   m_Name: Phase_Enemies_Intentions_Determine
   m_EditorClassIdentifier: 
+  _name: determine intentions
+  _displayBanner: 0

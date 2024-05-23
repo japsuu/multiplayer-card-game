@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84db3e9485a04d008a0384c30429f0eb, type: 3}
   m_Name: Phase_Players
   m_EditorClassIdentifier: 
+  _name: Players' phase
+  _displayBanner: 1
   _subPhases:
   - {fileID: 11400000, guid: 326c74e0223b431478d0643aef9c3508, type: 2}

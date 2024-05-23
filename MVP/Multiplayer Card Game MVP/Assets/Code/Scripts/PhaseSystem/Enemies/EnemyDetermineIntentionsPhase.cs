@@ -12,7 +12,7 @@ namespace PhaseSystem.Enemies
         public override string Name => "Determine Intentions";
         
         
-        public override IEnumerator Execute()
+        protected sealed override IEnumerator OnExecute()
         {
             Debug.LogWarning("TODO: Implement determining enemy intentions.");
             yield return null;

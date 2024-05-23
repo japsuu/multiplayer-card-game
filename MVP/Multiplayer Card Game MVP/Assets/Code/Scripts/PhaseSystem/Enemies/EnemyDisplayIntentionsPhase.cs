@@ -12,7 +12,7 @@ namespace PhaseSystem.Enemies
         public override string Name => ">Display Intentions";
         
         
-        public override IEnumerator Execute()
+        protected sealed override IEnumerator OnExecute()
         {
             Debug.LogWarning("TODO: Implement displaying intentions to the player.");
             yield return null;
