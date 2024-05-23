@@ -1,11 +1,10 @@
 ﻿using System;
-using DamageSystem;
 using NaughtyAttributes;
 using UnityEngine;
 
-namespace Player
+namespace DamageSystem
 {
-    public class PlayerHealth : MonoBehaviour, IDamageable
+    public class EntityHealth : MonoBehaviour, IDamageable
     {
         public event Action<HealthChangedArgs> HealthChanged;
         public event Action Died;
@@ -56,7 +55,7 @@ namespace Player
             int previousHealth = CurrentHealth;
             _currentHealth = 0;
             _isDead = true;
-            Debug.LogWarning("Player died!");
+            Debug.LogWarning($"Entity {gameObject.name} died!");
             
             HealthChanged?.Invoke(new HealthChangedArgs(previousHealth, CurrentHealth));
             Died?.Invoke();

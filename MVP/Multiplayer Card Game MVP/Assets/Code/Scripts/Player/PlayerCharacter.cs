@@ -1,6 +1,7 @@
 ﻿using System;
 using Boards;
 using DamageSystem;
+using PhaseSystem;
 using UnityEngine;
 
 namespace Player
@@ -8,7 +9,7 @@ namespace Player
     /// <summary>
     /// Represents a player character on the board.
     /// </summary>
-    [RequireComponent(typeof(PlayerHealth))]
+    [RequireComponent(typeof(EntityHealth))]
     public class PlayerCharacter : MonoBehaviour, ICellOccupant
     {
         public static PlayerCharacter LocalPlayer { get; private set; }
@@ -20,7 +21,7 @@ namespace Player
         [Range(1, 5)]
         private int _movementRange = 2;
         
-        public PlayerHealth Health { get; private set; }
+        public EntityHealth Health { get; private set; }
         public Vector2Int GridPosition { get; private set; }
         
         public bool IsLocalPlayer => this == LocalPlayer;
@@ -30,7 +31,16 @@ namespace Player
 
         private void Awake()
         {
-            Health = GetComponent<PlayerHealth>();
+            Health = GetComponent<EntityHealth>();
+            Health.Died += OnDied;
+        }
+
+
+        private void OnDied()
+        {
+            GameLoopManager.Instance.StopGameLoop();
+            
+            Destroy(gameObject);
         }
 
 

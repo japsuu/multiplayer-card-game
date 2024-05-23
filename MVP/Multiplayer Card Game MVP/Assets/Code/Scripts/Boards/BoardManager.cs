@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cameras;
+using PhaseSystem;
 using Player;
 using Singletons;
 using UnityEngine;
@@ -137,6 +138,8 @@ namespace Boards
             SetCameraOrigin();
 
             CreateLocalPlayer();
+            
+            GameLoopManager.Instance.StartGameLoop();
         }
 
 
