@@ -19,11 +19,11 @@ namespace Boards
         
         [SerializeField]
         [Range(2, 12)]
-        private int _boardWidth = 8;
+        private int _boardWidth = 5;
 
         [SerializeField]
         [Range(2, 12)]
-        private int _boardHeight = 5;
+        private int _boardHeight = 8;
 
         [SerializeField]
         private EnemyBoardSide _enemySide = EnemyBoardSide.Top;
@@ -39,20 +39,10 @@ namespace Boards
         private BoardRenderer _boardRenderer;
         private Board _board;
         private CellHighlighter _hoveredCellHighlighter;
-        private readonly List<Vector2Int> _availableMovementCells = new();
-        private readonly List<Vector2Int> _blockedMovementCells = new();
         
         
-        public bool TryGetCell(Vector2Int pos, out BoardCell cell)
-        {
-            return TryGetCell(pos.x, pos.y, out cell);
-        }
-        
-        
-        public bool TryGetCell(int x, int y, out BoardCell cell)
-        {
-            return _board.TryGetCell(x, y, out cell);
-        }
+        public bool TryGetCell(Vector2Int pos, out BoardCell cell) => TryGetCell(pos.x, pos.y, out cell);
+        public bool TryGetCell(int x, int y, out BoardCell cell) => _board.TryGetCell(x, y, out cell);
 
 
         /// <summary>
@@ -119,6 +109,46 @@ namespace Boards
         }
 
 
+        public IEnumerable<BoardCell> HighlightCellsForMovement(Vector2Int position, int range)
+        {
+            for (int y = position.y - range; y <= position.y + range; y++)
+            for (int x = position.x - range; x <= position.x + range; x++)
+            {
+                Vector2Int cellPos = new(x, y);
+                
+                // Skip the cell the player is on.
+                if (cellPos == position)
+                    continue;
+                
+                // Skip cells that are out of bounds.
+                if (!_board.TryGetCell(x, y, out BoardCell cell))
+                    continue;
+
+                if (cell.IsOccupied || cell.Side != CellSide.Player)
+                {
+                    _boardRenderer.HighlightCell(cellPos, true);
+                }
+                else
+                {
+                    _boardRenderer.HighlightCell(cellPos, false);
+                }
+                
+                yield return cell;
+            }
+        }
+
+
+        public void StopHighlightCells()
+        {
+            _boardRenderer.StopHighlightCells();
+        }
+        
+        
+        public void AddOccupant(Vector2Int pos, ICellOccupant occupant) => _board.AddOccupant(pos, occupant);
+        public void MoveOccupant(ICellOccupant occupant, Vector2Int to) => _board.MoveOccupant(occupant, to);
+        public void RemoveOccupant(ICellOccupant occupant) => _board.RemoveOccupant(occupant);
+
+
         private void Awake()
         {
             _boardRenderer = GetComponent<BoardRenderer>();
@@ -156,99 +186,13 @@ namespace Boards
             PlayerCharacter localPlayer = Instantiate(_playerPrefab, worldPosition, Quaternion.identity);
             PlayerCharacter.SetLocalPlayer(localPlayer);
             
-            _board.SetCellOccupation(_playerSpawnPosition.x, _playerSpawnPosition.y, localPlayer);
-            localPlayer.SetGridPosition(_playerSpawnPosition, worldPosition);
+            AddOccupant(_playerSpawnPosition, localPlayer);
         }
 
 
         private void Update()
         {
             UpdateHoveredCellHighlighter();
-            CheckClickedCell();
-        }
-
-
-        private void CheckClickedCell()
-        {
-            if (PlayerCharacter.LocalPlayer == null)
-                return;
-            
-            if (!Input.GetMouseButtonDown(0))
-                return;
-            
-            Vector3 mousePos = CameraController.Instance.Camera.ScreenToWorldPoint(Input.mousePosition);
-            if (!TryGetWorldToCell(mousePos, out Vector2Int cellPos))
-                return;
-            
-            HandleClickedCell(cellPos);
-        }
-
-
-        private void HandleClickedCell(Vector2Int clickedCellPos)
-        {
-            Vector2Int playerPos = PlayerCharacter.LocalPlayer.GridPosition;
-            bool wasPlayerClicked = clickedCellPos == playerPos;
-            bool hasHighlightedCells = _availableMovementCells.Count > 0 || _blockedMovementCells.Count > 0;
-            
-            // If the player was clicked and there are no highlighted cells, highlight the cells the player could move to.
-            if (wasPlayerClicked && !hasHighlightedCells)
-            {
-                HighlightCellsAround(playerPos, PlayerCharacter.LocalPlayer.MovementRange);
-                return;
-            }
-            
-            // If a cell was clicked that can be moved to, move the player to that cell.
-            if (_availableMovementCells.Contains(clickedCellPos))
-            {
-                PlayerCharacter.LocalPlayer.SetGridPosition(clickedCellPos, _boardRenderer.CellToWorld(new Vector3Int(clickedCellPos.x, clickedCellPos.y, 0)));
-                _board.SetCellOccupation(playerPos.x, playerPos.y, null);
-                _board.SetCellOccupation(clickedCellPos.x, clickedCellPos.y, PlayerCharacter.LocalPlayer);
-                
-                StopHighlightCells();
-                return;
-            }
-            
-            // If any other cell was clicked, stop highlighting cells.
-            StopHighlightCells();
-        }
-
-
-        private void HighlightCellsAround(Vector2Int position, int range)
-        {
-            _availableMovementCells.Clear();
-            _blockedMovementCells.Clear();
-            for (int y = position.y - range; y <= position.y + range; y++)
-            for (int x = position.x - range; x <= position.x + range; x++)
-            {
-                Vector2Int cellPos = new(x, y);
-                
-                // Skip cells that are out of bounds.
-                if (x < 0 || x >= _board.Width || y < 0 || y >= _board.Height)
-                    continue;
-                
-                // Skip the cell the player is on.
-                if (cellPos == position)
-                    continue;
-
-                if (_board.IsCellOccupied(x, y) || _board.GetCellSide(x, y) != CellSide.Player)
-                {
-                    _boardRenderer.HighlightCell(cellPos, true);
-                    _blockedMovementCells.Add(cellPos);
-                }
-                else
-                {
-                    _boardRenderer.HighlightCell(cellPos, false);
-                    _availableMovementCells.Add(cellPos);
-                }
-            }
-        }
-
-
-        private void StopHighlightCells()
-        {
-            _boardRenderer.StopHighlightCells();
-            _availableMovementCells.Clear();
-            _blockedMovementCells.Clear();
         }
 
 

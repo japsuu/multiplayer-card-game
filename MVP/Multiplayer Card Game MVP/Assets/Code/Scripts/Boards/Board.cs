@@ -47,6 +47,7 @@ namespace Boards
         }
         
         
+        public bool TryGetCell(Vector2Int pos, out BoardCell cell) => TryGetCell(pos.x, pos.y, out cell);
         public bool TryGetCell(int x, int y, out BoardCell cell)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
@@ -61,19 +62,13 @@ namespace Boards
         
         
         /// <returns>If a cell is occupied or not.</returns>
-        public bool IsCellOccupied(int x, int y)
-        {
-            return _boardCells[x, y].Occupant != null;
-        }
-        
-        
+        public bool IsCellOccupied(int x, int y) => _boardCells[x, y].Occupant != null;
+
+
         /// <returns>The side of the grid the cell is on - player or enemy.</returns>
-        public CellSide GetCellSide(int x, int y)
-        {
-            return _boardCells[x, y].Side;
-        }
-        
-        
+        public CellSide GetCellSide(int x, int y) => _boardCells[x, y].Side;
+
+
         /// <summary>
         /// Resizes the board.
         /// </summary>
@@ -89,20 +84,71 @@ namespace Boards
         }
 
 
-        /// <summary>
-        /// Sets the occupation of a cell (if it contains something or not).
-        /// </summary>
-        /// <param name="x">The x-coordinate of the cell.</param>
-        /// <param name="y">The y-coordinate of the cell.</param>
-        /// <param name="occupant">The new occupant of the cell.</param>
-        public void SetCellOccupation(int x, int y, [CanBeNull] ICellOccupant occupant)
+        public void AddOccupant(Vector2Int pos, [CanBeNull] ICellOccupant occupant)
         {
-            if (_boardCells[x, y].Occupant == occupant)
+            if (!TryGetCell(pos, out BoardCell cell))
+                Debug.LogError($"Could not get cell at {pos}.");
+            
+            if (cell.Occupant == occupant)
                 return;
             
-            _boardCells[x, y].Occupant = occupant;
+            if (cell.Occupant != null)
+                Debug.LogWarning($"Cell at {pos} is already occupied, replacing...");
             
-            OnCellOccupationChanged?.Invoke(new Vector2Int(x, y), occupant);
+            cell.Occupant = occupant;
+            
+            occupant?.OnAddedToBoard(pos);
+            
+            OnCellOccupationChanged?.Invoke(pos, occupant);
+        }
+
+
+        public void MoveOccupant(ICellOccupant occupant, Vector2Int toPos)
+        {
+            Vector2Int fromPos = occupant.BoardPosition;
+            
+            if (!TryGetCell(fromPos, out BoardCell fromCell))
+                Debug.LogError($"Could not get cell at {fromPos}.");
+            
+            if (!TryGetCell(toPos, out BoardCell toCell))
+                Debug.LogError($"Could not get cell at {toPos}.");
+
+            if (fromCell.Occupant != occupant)
+            {
+                Debug.LogError($"Cell at {fromPos} does not contain the expected occupant.");
+                return;
+            }
+            
+            if (toCell.Occupant != null)
+                Debug.LogWarning($"Cell at {toPos} is already occupied, replacing...");
+            
+            toCell.Occupant = occupant;
+            fromCell.Occupant = null;
+            
+            occupant.OnMovedOnBoard(toPos);
+            
+            OnCellOccupationChanged?.Invoke(fromPos, null);
+            OnCellOccupationChanged?.Invoke(toPos, occupant);
+        }
+        
+        
+        public void RemoveOccupant(ICellOccupant occupant)
+        {
+            Vector2Int position = occupant.BoardPosition;
+            
+            if (!TryGetCell(position, out BoardCell cell))
+                Debug.LogError($"Could not get cell at {position}.");
+
+            if (cell.Occupant != occupant)
+            {
+                Debug.LogError($"Cell at {position} does not contain the expected occupant.");
+                return;
+            }
+            
+            cell.Occupant = null;
+            occupant.OnRemovedFromBoard();
+            
+            OnCellOccupationChanged?.Invoke(position, null);
         }
 
 

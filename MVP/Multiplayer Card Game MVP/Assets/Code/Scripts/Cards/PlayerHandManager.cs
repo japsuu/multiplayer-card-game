@@ -31,15 +31,15 @@ namespace Cards
         [SerializeField]
         private Transform _cardPosTargetRoot;
         
+        [SerializeField]
+        private Transform _cardsPanel;
+
+        [SerializeField]
+        private float _cardsPanelHideOffset = 400f;
+        
         private readonly List<Transform> _cardPosTargets = new();
         private readonly PlayerHand _hand = new();
-        
-        
-        private void Start()
-        {
-            foreach (CardData cardData in _startingCards)
-                AddCardToHand(cardData);
-        }
+        private Vector3 _cardsPanelOriginalPos;
 
 
         public void AddCardToHand(CardData cardData)
@@ -47,6 +47,38 @@ namespace Cards
             CardInstance card = Instantiate(_cardPrefab, _cardRoot);
             card.Initialize(cardData);
             _hand.Cards.Add(card);
+        }
+
+
+        public void PlayCard(CardInstance cardInstance, Vector2Int cell)
+        {
+            StartCoroutine(cardInstance.Data.Play(cell));
+            
+            _hand.Cards.Remove(cardInstance);
+            Destroy(cardInstance.gameObject);
+        }
+
+
+        public void ShowHand()
+        {
+            _cardsPanel.position = _cardsPanelOriginalPos;
+            Debug.LogWarning("TODO: Show tabled cards");
+        }
+
+
+        public void HideHand()
+        {
+            _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
+            Debug.LogWarning("TODO: Hide tabled cards");
+        }
+        
+        
+        private void Start()
+        {
+            _cardsPanelOriginalPos = _cardsPanel.position;
+            
+            foreach (CardData cardData in _startingCards)
+                AddCardToHand(cardData);
         }
 
 
@@ -93,15 +125,6 @@ namespace Cards
                 Transform target = Instantiate(_cardPosTargetPrefab, _cardPosTargetRoot).transform;
                 _cardPosTargets.Add(target);
             }
-        }
-
-
-        public void PlayCard(CardInstance cardInstance, Vector2Int cell)
-        {
-            StartCoroutine(cardInstance.Data.Play(cell));
-            
-            _hand.Cards.Remove(cardInstance);
-            Destroy(cardInstance.gameObject);
         }
     }
 }

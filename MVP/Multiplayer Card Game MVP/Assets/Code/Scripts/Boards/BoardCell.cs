@@ -18,6 +18,8 @@
         /// The occupant of the cell.
         /// </summary>
         public ICellOccupant Occupant;
+        
+        public bool IsOccupied => Occupant != null;
 
 
         public BoardCell(int x, int y, CellSide side)
