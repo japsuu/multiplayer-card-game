@@ -1,68 +1,21 @@
-﻿using DamageSystem;
-using Entities.Players;
-using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using Entities.Players;
 
 namespace UI
 {
-    public class PlayerHealthDisplay : MonoBehaviour
+    public class PlayerHealthDisplay : HealthDisplay
     {
-        [SerializeField]
-        private Slider _slider;
-
-        [SerializeField]
-        private TMP_Text _text;
-        
-        private int _maxHealth;
-
-
         private void OnEnable()
         {
-            PlayerCharacter.LocalPlayerCreated += SubscribeToHealthUpdates;
-            PlayerCharacter.LocalPlayerDestroyed += OnLocalPlayerDestroyed;
-            
             if (PlayerCharacter.LocalPlayer != null)
-                SubscribeToHealthUpdates(PlayerCharacter.LocalPlayer);
-        }
-
-
-        private void OnLocalPlayerDestroyed()
-        {
-            PlayerCharacter.LocalPlayer.Health.HealthChanged -= OnHealthChanged;
-        }
-
-
-        private void SubscribeToHealthUpdates(PlayerCharacter player)
-        {
-            player.Health.HealthChanged += OnHealthChanged;
+                SetTargetEntity(PlayerCharacter.LocalPlayer);
             
-            _maxHealth = player.Health.MaxHealth;
-            Refresh(player.Health.CurrentHealth);
+            PlayerCharacter.LocalPlayerCreated += SetTargetEntity;
         }
 
 
         private void OnDisable()
         {
-            PlayerCharacter.LocalPlayerCreated -= SubscribeToHealthUpdates;
-            PlayerCharacter.LocalPlayerDestroyed -= OnLocalPlayerDestroyed;
-            
-            if (PlayerCharacter.LocalPlayer != null)
-                PlayerCharacter.LocalPlayer.Health.HealthChanged -= OnHealthChanged;
-        }
-
-
-        private void OnHealthChanged(HealthChangedArgs args)
-        {
-            Refresh(args.NewHealth);
-        }
-
-
-        private void Refresh(int newHealth)
-        {
-            _slider.maxValue = _maxHealth;
-            _slider.value = newHealth;
-            _text.text = $"{newHealth}/{_maxHealth} hp";
+            PlayerCharacter.LocalPlayerCreated -= SetTargetEntity;
         }
     }
 }

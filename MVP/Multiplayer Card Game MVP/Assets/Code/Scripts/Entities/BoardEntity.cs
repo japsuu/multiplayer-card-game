@@ -10,6 +10,8 @@ namespace Entities
     [RequireComponent(typeof(EntityHealth))]
     public abstract class BoardEntity : MonoBehaviour, ICellOccupant
     {
+        public event Action Died;
+        
         public EntityHealth Health { get; private set; }
         public Vector2Int BoardPosition { get; private set; }
         
@@ -30,7 +32,7 @@ namespace Entities
 
         public virtual IEnumerator OnRemovedFromBoard()
         {
-            throw new NotImplementedException();
+            yield return null;
         }
 
 
@@ -49,6 +51,8 @@ namespace Entities
         
         private IEnumerator DeathCoroutine()
         {
+            Died?.Invoke();
+            
             yield return BoardManager.Instance.RemoveOccupant(this);
             
             Destroy(gameObject);
