@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Cards;
+using Player;
 using UnityEngine;
+using Utils;
 
 namespace PhaseSystem.Players
 {
@@ -14,16 +17,51 @@ namespace PhaseSystem.Players
     {
         protected override IEnumerator OnExecute()
         {
-            PlayerHandManager.Instance.ShowHand();
+            GameLoopManager.StartPlayerTurn();
             
-            yield return new WaitForSeconds(2f);
+            // Enable all actions.
+            PlayerHandManager.Instance.ShowHand();
+            PlayerCharacter.LocalPlayer.Movement.EnableMovement();
             
             // Since the player can either play cards or move, we wait until the player does one of these actions.
             // Once the player does one of these actions, we block the other action.
             // This is done by disabling the player's hand, or disabling the player's movement.
             
-            // PlayerHandManager.Instance.HideHand();
-            // yield return null;
+            // Yield until the player plays a card or moves.
+            yield return new WaitUntil(HasPlayerDoneAction);
+            
+            if (PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0)
+            {
+                // The player moved, so we disable the hand.
+                PlayerHandManager.Instance.HideHand();
+            }
+            else
+            {
+                // The player played a card, so we disable the movement.
+                PlayerCharacter.LocalPlayer.Movement.DisableMovement();
+            }
+
+            // Yield until the player ends their turn.
+            yield return WaitUntilPlayerEndsTurn();
+            
+            // Disable all actions.
+            PlayerHandManager.Instance.HideHand();
+            PlayerCharacter.LocalPlayer.Movement.DisableMovement();
+            
+            GameLoopManager.EndPlayerTurn();
         }
+
+
+        private static IEnumerator WaitUntilPlayerEndsTurn()
+        {
+            bool trigger = false;
+            Action triggerAction = () => trigger = true;
+            GameLoopManager.RequestEndPlayerTurn += triggerAction;
+            yield return new WaitUntil(() => trigger);
+            GameLoopManager.RequestEndPlayerTurn -= triggerAction;
+        }
+
+
+        private static bool HasPlayerDoneAction() => PlayerHandManager.Instance.CardsPlayedThisTurn > 0 || PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0;
     }
 }

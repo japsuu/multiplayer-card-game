@@ -17,15 +17,26 @@ namespace Player
         private readonly List<Vector2Int> _availableMovementCells = new();
         private readonly List<Vector2Int> _blockedMovementCells = new();
         
+        public int PlayerMovementsThisTurn { get; private set; }
         
+        
+        /// <summary>
+        /// Allows player movement, and highlights the cells the player can move to.
+        /// </summary>
         public void EnableMovement()
         {
+            PlayerMovementsThisTurn = 0;
             _allowMovement = true;
+            StartHighlightCells(PlayerCharacter.LocalPlayer.BoardPosition);
         }
         
         
+        /// <summary>
+        /// Disables player movement, and stops highlighting the cells the player can move to.
+        /// </summary>
         public void DisableMovement()
         {
+            PlayerMovementsThisTurn = 0;
             _allowMovement = false;
             StopHighlightCells();
         }
@@ -58,23 +69,35 @@ namespace Player
 
         private void HandleClickedCell(Vector2Int clickedCellPos)
         {
-            Vector2Int playerPos = PlayerCharacter.LocalPlayer.BoardPosition;
+            /*Vector2Int playerPos = PlayerCharacter.LocalPlayer.BoardPosition;
             bool wasPlayerClicked = clickedCellPos == playerPos;
-            bool hasHighlightedCells = _availableMovementCells.Count > 0 || _blockedMovementCells.Count > 0;
-            
             // If the player was clicked and there are no highlighted cells, highlight the cells the player could move to.
             if (wasPlayerClicked && !hasHighlightedCells)
             {
                 StartHighlightCells(playerPos);
                 return;
-            }
+            }*/
+            
+            bool hasHighlightedCells = _availableMovementCells.Count > 0 || _blockedMovementCells.Count > 0;
+            
+            if (!hasHighlightedCells)
+                return;
+            
+            if (!_availableMovementCells.Contains(clickedCellPos))
+                return;
             
             // If a cell was clicked that can be moved to, move the player to that cell.
-            if (_availableMovementCells.Contains(clickedCellPos))
-                BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, clickedCellPos);
-            
+            MovePlayer(clickedCellPos);
+                
             // Stop highlighting the cells.
             StopHighlightCells();
+        }
+
+
+        private void MovePlayer(Vector2Int cellPos)
+        {
+            PlayerMovementsThisTurn++;
+            BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
         }
 
 

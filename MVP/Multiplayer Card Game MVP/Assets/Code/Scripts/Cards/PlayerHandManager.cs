@@ -40,6 +40,8 @@ namespace Cards
         private readonly List<Transform> _cardPosTargets = new();
         private readonly PlayerHand _hand = new();
         private Vector3 _cardsPanelOriginalPos;
+        
+        public int CardsPlayedThisTurn { get; private set; }
 
 
         public void AddCardToHand(CardData cardData)
@@ -52,6 +54,8 @@ namespace Cards
 
         public void PlayCard(CardInstance cardInstance, Vector2Int cell)
         {
+            CardsPlayedThisTurn++;
+            
             StartCoroutine(cardInstance.Data.Play(cell));
             
             _hand.Cards.Remove(cardInstance);
@@ -61,6 +65,7 @@ namespace Cards
 
         public void ShowHand()
         {
+            CardsPlayedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
             Debug.LogWarning("TODO: Show tabled cards");
         }
@@ -68,6 +73,7 @@ namespace Cards
 
         public void HideHand()
         {
+            CardsPlayedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
             Debug.LogWarning("TODO: Hide tabled cards");
         }

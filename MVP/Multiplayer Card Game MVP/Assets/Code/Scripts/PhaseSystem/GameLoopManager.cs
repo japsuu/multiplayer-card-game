@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Singletons;
 using UnityEngine;
@@ -11,6 +12,10 @@ namespace PhaseSystem
     /// </summary>
     public class GameLoopManager : SingletonBehaviour<GameLoopManager>
     {
+        public static event Action RequestEndPlayerTurn;
+        public static event Action PlayerTurnStart;
+        public static event Action PlayerTurnEnd;
+        
         [SerializeField]
         private List<GamePhase> _phases;
 
@@ -37,6 +42,25 @@ namespace PhaseSystem
         public void StopGameLoop()
         {
             _shouldExecutePhases = false;
+        }
+        
+        
+        public static void StartPlayerTurn()
+        {
+            PlayerTurnStart?.Invoke();
+        }
+        
+        
+        public static void EndPlayerTurn()
+        {
+            PlayerTurnEnd?.Invoke();
+        }
+        
+        
+        public static void RequestEndCurrentPlayerTurn()
+        {
+            Debug.Log("Requested to end the current player turn.");
+            RequestEndPlayerTurn?.Invoke();
         }
         
         
