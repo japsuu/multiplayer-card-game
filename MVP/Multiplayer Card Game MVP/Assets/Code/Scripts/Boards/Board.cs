@@ -167,43 +167,5 @@ namespace Boards
             }
             BoardSizeChanged?.Invoke();
         }
-
-
-        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, bool includeOrigin)
-        {
-#warning Hacky solution, replace with a better one.
-            for (int i = 0; i < 100; i++)
-            {
-                int x = UnityEngine.Random.Range(origin.x - range, origin.x + range + 1);
-                int y = UnityEngine.Random.Range(origin.y - range, origin.y + range + 1);
-                
-                if (!includeOrigin && x == origin.x && y == origin.y)
-                    continue;
-                
-                if (TryGetCell(x, y, out BoardCell cell) && cell.Occupant == null)
-                    return new Vector2Int(x, y);
-            }
-            
-            throw new Exception("Could not find an empty cell.");
-        }
-
-
-        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, CellSide side, bool includeOrigin)
-        {
-#warning Hacky solution, replace with a better one.
-            for (int i = 0; i < 100; i++)
-            {
-                int x = UnityEngine.Random.Range(origin.x - range, origin.x + range + 1);
-                int y = UnityEngine.Random.Range(origin.y - range, origin.y + range + 1);
-                
-                if (!includeOrigin && x == origin.x && y == origin.y)
-                    continue;
-                
-                if (TryGetCell(x, y, out BoardCell cell) && cell.Occupant == null && cell.Side == side)
-                    return new Vector2Int(x, y);
-            }
-            
-            throw new Exception("Could not find an empty cell.");
-        }
     }
 }

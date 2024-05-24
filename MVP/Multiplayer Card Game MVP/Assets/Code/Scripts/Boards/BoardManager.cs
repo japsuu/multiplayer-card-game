@@ -106,18 +106,6 @@ namespace Boards
         }
         
         
-        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, bool includeOrigin = false)
-        {
-            return _board.GetRandomEmptyCell(origin, range, includeOrigin);
-        }
-        
-        
-        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, CellSide side, bool includeOrigin = false)
-        {
-            return _board.GetRandomEmptyCell(origin, range, side, includeOrigin);
-        }
-        
-        
         /// <summary>
         /// Creates a new highlight group.
         /// </summary>
@@ -127,32 +115,41 @@ namespace Boards
         }
 
 
-        public IEnumerable<BoardCell> HighlightCellsForMovement(Vector2Int position, int range)
+        public IEnumerable<BoardCell> GetEmptyCells(Vector2Int position, int range, CellSide side, bool includeOrigin = false)
         {
             for (int y = position.y - range; y <= position.y + range; y++)
             for (int x = position.x - range; x <= position.x + range; x++)
             {
                 Vector2Int cellPos = new(x, y);
                 
-                // Skip the cell the player is on.
-                if (cellPos == position)
+                // Skip the origin
+                if (!includeOrigin && cellPos == position)
                     continue;
                 
-                // Skip cells that are out of bounds.
-                if (!_board.TryGetCell(x, y, out BoardCell cell))
+                // Skip cells that are out of bounds
+                if (!_board.TryGetCell(cellPos, out BoardCell cell))
                     continue;
 
-                if (cell.IsOccupied || cell.Side != CellSide.Player)
-                {
-                    _boardRenderer.HighlightCell(cellPos, true);
-                }
-                else
-                {
-                    _boardRenderer.HighlightCell(cellPos, false);
-                }
+                if (cell.IsOccupied || cell.Side != side)
+                    continue;
                 
                 yield return cell;
             }
+        }
+        
+        
+        public void HighlightCells(IEnumerable<Vector2Int> positions, bool isBlocked)
+        {
+            foreach (Vector2Int pos in positions)
+            {
+                HighlightCell(pos, isBlocked);
+            }
+        }
+        
+        
+        public void HighlightCell(Vector2Int position, bool isBlocked)
+        {
+            _boardRenderer.HighlightCell(position, isBlocked);
         }
 
 

@@ -1,4 +1,6 @@
-﻿namespace Boards
+﻿using UnityEngine;
+
+namespace Boards
 {
     /// <summary>
     /// In-memory representation of a cell on the board.
@@ -6,6 +8,7 @@
     /// </summary>
     public class BoardCell
     {
+        public readonly Vector2Int Position;
         public readonly int X;
         public readonly int Y;
         
@@ -26,6 +29,7 @@
         {
             X = x;
             Y = y;
+            Position = new Vector2Int(x, y);
             Side = side;
         }
     }

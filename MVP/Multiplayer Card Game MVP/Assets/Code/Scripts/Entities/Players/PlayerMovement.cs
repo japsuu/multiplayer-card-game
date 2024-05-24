@@ -14,7 +14,6 @@ namespace Entities.Players
         private bool _allowMovement = true;
         
         private readonly List<Vector2Int> _availableMovementCells = new();
-        private readonly List<Vector2Int> _blockedMovementCells = new();
         
         public int PlayerMovementsThisTurn { get; private set; }
         
@@ -77,7 +76,7 @@ namespace Entities.Players
                 return;
             }*/
             
-            bool hasHighlightedCells = _availableMovementCells.Count > 0 || _blockedMovementCells.Count > 0;
+            bool hasHighlightedCells = _availableMovementCells.Count > 0;
             
             if (!hasHighlightedCells)
                 return;
@@ -103,18 +102,11 @@ namespace Entities.Players
         private void StartHighlightCells(Vector2Int playerPos)
         {
             _availableMovementCells.Clear();
-            _blockedMovementCells.Clear();
 
-            foreach (BoardCell cell in BoardManager.Instance.HighlightCellsForMovement(playerPos, _movementRange))
+            foreach (BoardCell cell in BoardManager.Instance.GetEmptyCells(playerPos, _movementRange, CellSide.Player))
             {
-                if (cell.IsOccupied || cell.Side != CellSide.Player)
-                {
-                    _blockedMovementCells.Add(new Vector2Int(cell.X, cell.Y));
-                }
-                else
-                {
-                    _availableMovementCells.Add(new Vector2Int(cell.X, cell.Y));
-                }
+                _availableMovementCells.Add(cell.Position);
+                BoardManager.Instance.HighlightCell(cell.Position, false);
             }
         }
 
@@ -123,7 +115,6 @@ namespace Entities.Players
         {
             BoardManager.Instance.StopHighlightCells();
             _availableMovementCells.Clear();
-            _blockedMovementCells.Clear();
         }
     }
 }

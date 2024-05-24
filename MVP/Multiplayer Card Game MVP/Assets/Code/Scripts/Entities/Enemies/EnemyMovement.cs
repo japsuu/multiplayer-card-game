@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Boards;
 using UnityEngine;
 
@@ -22,8 +24,16 @@ namespace Entities.Enemies
         public IEnumerator Move()
         {
             // Move to a random cell within the movement range.
-            Vector2Int randomCell = BoardManager.Instance.GetRandomEmptyCell(_enemy.BoardPosition, _movementRange, CellSide.Enemy);
-            yield return BoardManager.Instance.MoveOccupant(_enemy, randomCell);
+            List<BoardCell> availableCells = BoardManager.Instance.GetEmptyCells(_enemy.BoardPosition, _movementRange, CellSide.Enemy).ToList();
+            if (availableCells.Count == 0)
+            {
+                Debug.LogWarning("No available cells to move to.");
+                yield break;
+            }
+            
+            BoardCell randomCell = availableCells[Random.Range(0, availableCells.Count)];
+            
+            yield return BoardManager.Instance.MoveOccupant(_enemy, randomCell.Position);
         }
     }
 }
