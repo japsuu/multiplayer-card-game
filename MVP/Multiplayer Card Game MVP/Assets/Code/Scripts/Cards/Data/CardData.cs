@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Cards.Data
 {
@@ -24,17 +23,6 @@ namespace Cards.Data
         public string Description => _description;
         public Sprite Sprite => _sprite;
         public int ManaCost => _manaCost;
-
-
-        /// <summary>
-        /// Called when the user has played the card.
-        /// </summary>
-        /// <param name="cell">The cell the user has dropped the card on.</param>
-        /// <returns></returns>
-        public IEnumerator Play(Vector2Int cell)
-        {
-            yield return OnPlay(cell);
-        }
         
         
         /// <summary>
@@ -53,12 +41,5 @@ namespace Cards.Data
         /// Called when the user has stopped dragging the card.
         /// </summary>
         public virtual void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard) { }
-        
-        /// <summary>
-        /// Called when the user has played the card.
-        /// </summary>
-        /// <param name="cell">The cell the user has dropped the card on.</param>
-        /// <returns></returns>
-        protected abstract IEnumerator OnPlay(Vector2Int cell);
     }
 }

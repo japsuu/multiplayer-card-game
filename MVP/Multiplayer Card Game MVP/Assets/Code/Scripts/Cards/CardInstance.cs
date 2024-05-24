@@ -83,17 +83,23 @@ namespace Cards
         {
             if (_isBeingDragged)
             {
-                if (!Input.GetMouseButtonDown(1))
-                    return;
-            
-                Data.OnEndDrag(this, false);
-                _isBeingDragged = false;
-
-                DestroyHighlighter();
+                CheckForDragCancel();
                 return;
             }
             
             MoveTowardsHome();
+        }
+
+
+        private void CheckForDragCancel()
+        {
+            if (!Input.GetMouseButtonDown(1))
+                return;
+            
+            Data.OnEndDrag(this, false);
+            _isBeingDragged = false;
+
+            DestroyHighlighter();
         }
 
 

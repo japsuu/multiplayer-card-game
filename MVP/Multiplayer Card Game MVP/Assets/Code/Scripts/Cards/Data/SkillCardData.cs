@@ -6,13 +6,6 @@ namespace Cards.Data
     [CreateAssetMenu(menuName = "Cards/Create Skill Card", fileName = "Card_Skill_", order = 0)]
     public class SkillCardData : CardData
     {
-        protected override IEnumerator OnPlay(Vector2Int cell)
-        {
-            Debug.LogWarning("TODO: Implement card logic.");
-            yield break;
-        }
-
-
         public override void OnDrag(CardInstance draggedCard)
         {
             base.OnDrag(draggedCard);
@@ -26,7 +19,16 @@ namespace Cards.Data
             base.OnEndDrag(draggedCard, shouldPlayCard);
             
             if (shouldPlayCard)
-                PlayerHandManager.Instance.PlayCard(draggedCard, Vector2Int.zero);
+            {
+                PlayerHandManager.Instance.PlayCard(draggedCard, Play());
+            }
+        }
+        
+        
+        private IEnumerator Play()
+        {
+            Debug.LogWarning("TODO: Implement card logic.");
+            yield break;
         }
     }
 }

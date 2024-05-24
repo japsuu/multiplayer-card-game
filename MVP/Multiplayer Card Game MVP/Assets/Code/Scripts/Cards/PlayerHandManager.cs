@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Cards.Data;
 using Singletons;
 using UnityEngine;
@@ -52,11 +53,11 @@ namespace Cards
         }
 
 
-        public void PlayCard(CardInstance cardInstance, Vector2Int cell)
+        public void PlayCard(CardInstance cardInstance, IEnumerator playCoroutine)
         {
             CardsPlayedThisTurn++;
             
-            StartCoroutine(cardInstance.Data.Play(cell));
+            StartCoroutine(playCoroutine);
             
             _hand.Cards.Remove(cardInstance);
             Destroy(cardInstance.gameObject);

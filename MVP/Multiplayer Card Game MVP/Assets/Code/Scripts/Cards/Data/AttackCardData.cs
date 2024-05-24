@@ -58,13 +58,13 @@ namespace Cards.Data
             base.OnEndDrag(draggedCard, shouldPlayCard);
             
             if (shouldPlayCard && TargetingArrow.Instance.TryGetCell(out Vector2Int cell))
-                PlayerHandManager.Instance.PlayCard(draggedCard, cell);
+                PlayerHandManager.Instance.PlayCard(draggedCard, Play(cell));
             
             TargetingArrow.Instance.Deactivate();
         }
         
         
-        protected override IEnumerator OnPlay(Vector2Int cell)
+        private IEnumerator Play(Vector2Int cell)
         {
             foreach (Vector2Int damagedPos in _attackPattern.GetCells(cell))
             {
