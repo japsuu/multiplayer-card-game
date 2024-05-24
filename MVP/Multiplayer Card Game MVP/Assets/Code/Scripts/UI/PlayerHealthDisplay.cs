@@ -1,5 +1,5 @@
 ﻿using DamageSystem;
-using Player;
+using Entities.Players;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

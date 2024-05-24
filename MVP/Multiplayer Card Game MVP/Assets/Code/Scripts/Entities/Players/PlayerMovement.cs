@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Boards;
 using Cameras;
 using UnityEngine;
 
-namespace Player
+namespace Entities.Players
 {
     public class PlayerMovement : MonoBehaviour
     {

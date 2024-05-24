@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Cards;
-using Player;
+using Entities.Players;
 using UnityEngine;
 
 namespace PhaseSystem.Players

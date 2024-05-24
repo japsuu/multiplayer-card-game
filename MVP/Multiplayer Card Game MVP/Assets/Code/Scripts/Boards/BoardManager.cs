@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cameras;
+using Entities.Players;
 using PhaseSystem;
-using Player;
 using Singletons;
 using UnityEngine;
 
