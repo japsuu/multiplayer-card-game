@@ -12,7 +12,8 @@ namespace PhaseSystem
     /// </summary>
     public class GameLoopManager : SingletonBehaviour<GameLoopManager>
     {
-        public static event Action RequestEndPlayerTurn;
+        public static bool EndTurnRequested;
+        
         public static event Action PlayerTurnStart;
         public static event Action PlayerTurnEnd;
         
@@ -47,20 +48,22 @@ namespace PhaseSystem
         
         public static void StartPlayerTurn()
         {
+            EndTurnRequested = false;
             PlayerTurnStart?.Invoke();
         }
         
         
         public static void EndPlayerTurn()
         {
+            EndTurnRequested = false;
             PlayerTurnEnd?.Invoke();
         }
         
         
-        public static void RequestEndCurrentPlayerTurn()
+        public static void RequestEndTurn()
         {
-            Debug.Log("Requested to end the current player turn.");
-            RequestEndPlayerTurn?.Invoke();
+            EndTurnRequested = true;
+            print("End turn requested.");
         }
         
         

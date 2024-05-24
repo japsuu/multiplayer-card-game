@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Cards;
 using Player;
 using UnityEngine;
-using Utils;
 
 namespace PhaseSystem.Players
 {
@@ -27,8 +25,9 @@ namespace PhaseSystem.Players
             // Once the player does one of these actions, we block the other action.
             // This is done by disabling the player's hand, or disabling the player's movement.
             
-            // Yield until the player plays a card or moves.
-            yield return new WaitUntil(HasPlayerDoneAction);
+            // Yield until the player plays a card, moves, or ends their turn.
+            while (!IsTurnEndRequested() && !HasPlayerDoneAction())
+                yield return null;
             
             if (PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0)
             {
@@ -42,7 +41,7 @@ namespace PhaseSystem.Players
             }
 
             // Yield until the player ends their turn.
-            yield return WaitUntilPlayerEndsTurn();
+            yield return new WaitUntil(IsTurnEndRequested);
             
             // Disable all actions.
             PlayerHandManager.Instance.HideHand();
@@ -51,17 +50,17 @@ namespace PhaseSystem.Players
             GameLoopManager.EndPlayerTurn();
         }
 
-
-        private static IEnumerator WaitUntilPlayerEndsTurn()
+        /*private static IEnumerator WaitUntilPlayerEndsTurn()
         {
             bool trigger = false;
             Action triggerAction = () => trigger = true;
             GameLoopManager.RequestEndPlayerTurn += triggerAction;
             yield return new WaitUntil(() => trigger);
             GameLoopManager.RequestEndPlayerTurn -= triggerAction;
-        }
+        }*/
 
 
+        private static bool IsTurnEndRequested() => GameLoopManager.EndTurnRequested;
         private static bool HasPlayerDoneAction() => PlayerHandManager.Instance.CardsPlayedThisTurn > 0 || PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0;
     }
 }

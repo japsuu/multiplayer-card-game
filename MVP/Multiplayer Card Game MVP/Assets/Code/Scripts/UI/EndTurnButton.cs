@@ -41,7 +41,7 @@ namespace UI
 
         private static void OnButtonClicked()
         {
-            GameLoopManager.RequestEndCurrentPlayerTurn();
+            GameLoopManager.RequestEndTurn();
         }
 
 
@@ -63,7 +63,6 @@ namespace UI
             
             // Tween to original position
             _rectTransform.DOAnchorPosX(_originalPosition.x, 0.5f);
-            print("showing");
         }
         
         
@@ -73,7 +72,6 @@ namespace UI
             
             // Tween to hidden position
             _rectTransform.DOAnchorPosX(-_originalPosition.x, 0.5f);
-            print("hiding");
         }
     }
 }
