@@ -2502,6 +2502,8 @@ MonoBehaviour:
   _hoveredCellHighlightPrefab: {fileID: 5114997266451876714, guid: 973de5c1c394dac44a58e1afb0994773, type: 3}
   _playerPrefab: {fileID: 6473087916945138897, guid: 80114b65ea7ea9e44967448b9c4cb966, type: 3}
   _playerSpawnPosition: {x: 1, y: 2}
+  _enemyPrefab: {fileID: 4878927427674931417, guid: 13eed1b031212e0448ac06492c39fcb7, type: 3}
+  _enemySpawnPosition: {x: 3, y: 5}
 --- !u!4 &3072722994215485807
 Transform:
   m_ObjectHideFlags: 0

@@ -96,7 +96,7 @@ namespace Entities.Players
         private void MovePlayer(Vector2Int cellPos)
         {
             PlayerMovementsThisTurn++;
-            BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
+            StartCoroutine(BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos));
         }
 
 

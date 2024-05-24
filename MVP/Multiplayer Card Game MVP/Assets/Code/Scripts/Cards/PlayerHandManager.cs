@@ -85,6 +85,8 @@ namespace Cards
             
             foreach (CardData cardData in _startingCards)
                 AddCardToHand(cardData);
+            
+            HideHand();
         }
 
 

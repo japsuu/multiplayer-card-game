@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -84,26 +85,26 @@ namespace Boards
         }
 
 
-        public void AddOccupant(Vector2Int pos, [CanBeNull] ICellOccupant occupant)
+        public IEnumerator AddOccupant(Vector2Int pos, [CanBeNull] ICellOccupant occupant)
         {
             if (!TryGetCell(pos, out BoardCell cell))
                 Debug.LogError($"Could not get cell at {pos}.");
             
             if (cell.Occupant == occupant)
-                return;
+                yield break;
             
             if (cell.Occupant != null)
                 Debug.LogWarning($"Cell at {pos} is already occupied, replacing...");
             
             cell.Occupant = occupant;
             
-            occupant?.OnAddedToBoard(pos);
+            yield return occupant?.OnAddedToBoard(pos);
             
             OnCellOccupationChanged?.Invoke(pos, occupant);
         }
 
 
-        public void MoveOccupant(ICellOccupant occupant, Vector2Int toPos)
+        public IEnumerator MoveOccupant(ICellOccupant occupant, Vector2Int toPos)
         {
             Vector2Int fromPos = occupant.BoardPosition;
             
@@ -116,7 +117,7 @@ namespace Boards
             if (fromCell.Occupant != occupant)
             {
                 Debug.LogError($"Cell at {fromPos} does not contain the expected occupant.");
-                return;
+                yield break;
             }
             
             if (toCell.Occupant != null)
@@ -125,14 +126,14 @@ namespace Boards
             toCell.Occupant = occupant;
             fromCell.Occupant = null;
             
-            occupant.OnMovedOnBoard(toPos);
+            yield return occupant.OnMovedOnBoard(toPos);
             
             OnCellOccupationChanged?.Invoke(fromPos, null);
             OnCellOccupationChanged?.Invoke(toPos, occupant);
         }
         
         
-        public void RemoveOccupant(ICellOccupant occupant)
+        public IEnumerator RemoveOccupant(ICellOccupant occupant)
         {
             Vector2Int position = occupant.BoardPosition;
             
@@ -142,11 +143,11 @@ namespace Boards
             if (cell.Occupant != occupant)
             {
                 Debug.LogError($"Cell at {position} does not contain the expected occupant.");
-                return;
+                yield break;
             }
             
             cell.Occupant = null;
-            occupant.OnRemovedFromBoard();
+            yield return occupant.OnRemovedFromBoard();
             
             OnCellOccupationChanged?.Invoke(position, null);
         }
@@ -180,6 +181,25 @@ namespace Boards
                     continue;
                 
                 if (TryGetCell(x, y, out BoardCell cell) && cell.Occupant == null)
+                    return new Vector2Int(x, y);
+            }
+            
+            throw new Exception("Could not find an empty cell.");
+        }
+
+
+        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, CellSide side, bool includeOrigin)
+        {
+#warning Hacky solution, replace with a better one.
+            for (int i = 0; i < 100; i++)
+            {
+                int x = UnityEngine.Random.Range(origin.x - range, origin.x + range + 1);
+                int y = UnityEngine.Random.Range(origin.y - range, origin.y + range + 1);
+                
+                if (!includeOrigin && x == origin.x && y == origin.y)
+                    continue;
+                
+                if (TryGetCell(x, y, out BoardCell cell) && cell.Occupant == null && cell.Side == side)
                     return new Vector2Int(x, y);
             }
             

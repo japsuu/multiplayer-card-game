@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2673894092013409842}
   - component: {fileID: 4878927427674931417}
   - component: {fileID: 239213812491480071}
+  - component: {fileID: 4567362235307002790}
   m_Layer: 0
   m_Name: pf_Enemy
   m_TagString: Untagged
@@ -46,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f7b38f46fe436cbb3fa584f74c920a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _phaseMachine:
-    _phases: []
+  _actions:
+  - {fileID: 11400000, guid: 65f2214f1ee778f409042b6ef10e42a1, type: 2}
 --- !u!114 &239213812491480071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,6 +64,19 @@ MonoBehaviour:
   _maxHealth: 100
   _currentHealth: 0
   _isDead: 0
+--- !u!114 &4567362235307002790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106449282346360423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6e84e872a34dcd8b0e12640c0eb537, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _movementRange: 1
 --- !u!1 &7008291091343679817
 GameObject:
   m_ObjectHideFlags: 0

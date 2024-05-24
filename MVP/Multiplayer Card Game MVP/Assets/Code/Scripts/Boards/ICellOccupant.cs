@@ -1,4 +1,5 @@
-﻿using DamageSystem;
+﻿using System.Collections;
+using DamageSystem;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -11,8 +12,8 @@ namespace Boards
         
         public Vector2Int BoardPosition { get; }
         
-        public void OnAddedToBoard(Vector2Int boardPos);
-        public void OnMovedOnBoard(Vector2Int newBoardPos);
-        public void OnRemovedFromBoard();
+        public IEnumerator OnAddedToBoard(Vector2Int boardPos);
+        public IEnumerator OnMovedOnBoard(Vector2Int newBoardPos);
+        public IEnumerator OnRemovedFromBoard();
     }
 }

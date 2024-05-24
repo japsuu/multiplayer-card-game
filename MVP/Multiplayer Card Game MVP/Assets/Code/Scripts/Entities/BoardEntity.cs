@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using Boards;
 using DamageSystem;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Entities
@@ -14,19 +16,19 @@ namespace Entities
         public IDamageable Damageable => Health;
         
         
-        public virtual void OnAddedToBoard(Vector2Int boardPos)
+        public virtual IEnumerator OnAddedToBoard(Vector2Int boardPos)
         {
-            MoveTo(boardPos);
+            yield return MoveTo(boardPos);
         }
 
 
-        public virtual void OnMovedOnBoard(Vector2Int newBoardPos)
+        public virtual IEnumerator OnMovedOnBoard(Vector2Int newBoardPos)
         {
-            MoveTo(newBoardPos);
+            yield return MoveTo(newBoardPos);
         }
 
 
-        public virtual void OnRemovedFromBoard()
+        public virtual IEnumerator OnRemovedFromBoard()
         {
             throw new NotImplementedException();
         }
@@ -41,20 +43,26 @@ namespace Entities
 
         protected virtual void OnDied()
         {
-            BoardManager.Instance.RemoveOccupant(this);
+            StartCoroutine(DeathCoroutine());
+        }
+        
+        
+        private IEnumerator DeathCoroutine()
+        {
+            yield return BoardManager.Instance.RemoveOccupant(this);
             
             Destroy(gameObject);
         }
 
 
-        private void MoveTo(Vector2Int boardPos)
+        private IEnumerator MoveTo(Vector2Int boardPos)
         {
             BoardPosition = boardPos;
             
             if (!BoardManager.Instance.TryGetCellToWorld(boardPos, out Vector3 worldPos))
                 throw new Exception("Could not get world position of cell.");
             
-            transform.position = worldPos;
+            yield return transform.DOMove(worldPos, 0.5f).WaitForCompletion();
         }
     }
 }

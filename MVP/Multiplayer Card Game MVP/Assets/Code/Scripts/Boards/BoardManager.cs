@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Cameras;
+using Entities.Enemies;
 using Entities.Players;
 using PhaseSystem;
 using Singletons;
@@ -35,6 +37,10 @@ namespace Boards
         [Header("Players")]
         [SerializeField] private PlayerCharacter _playerPrefab;
         [SerializeField] private Vector2Int _playerSpawnPosition;
+        
+        [Header("Enemies")]
+        [SerializeField] private EnemyCharacter _enemyPrefab;
+        [SerializeField] private Vector2Int _enemySpawnPosition;
 
         private BoardRenderer _boardRenderer;
         private Board _board;
@@ -106,6 +112,12 @@ namespace Boards
         }
         
         
+        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, CellSide side, bool includeOrigin = false)
+        {
+            return _board.GetRandomEmptyCell(origin, range, side, includeOrigin);
+        }
+        
+        
         /// <summary>
         /// Creates a new highlight group.
         /// </summary>
@@ -150,9 +162,9 @@ namespace Boards
         }
         
         
-        public void AddOccupant(Vector2Int pos, ICellOccupant occupant) => _board.AddOccupant(pos, occupant);
-        public void MoveOccupant(ICellOccupant occupant, Vector2Int to) => _board.MoveOccupant(occupant, to);
-        public void RemoveOccupant(ICellOccupant occupant) => _board.RemoveOccupant(occupant);
+        public IEnumerator AddOccupant(Vector2Int pos, ICellOccupant occupant) => _board.AddOccupant(pos, occupant);
+        public IEnumerator MoveOccupant(ICellOccupant occupant, Vector2Int to) => _board.MoveOccupant(occupant, to);
+        public IEnumerator RemoveOccupant(ICellOccupant occupant) => _board.RemoveOccupant(occupant);
 
 
         private void Awake()
@@ -174,6 +186,8 @@ namespace Boards
             SetCameraOrigin();
 
             CreateLocalPlayer();
+
+            CreateEnemies();
             
             GameLoopManager.Instance.StartGameLoop();
         }
@@ -191,8 +205,17 @@ namespace Boards
             
             PlayerCharacter localPlayer = Instantiate(_playerPrefab, worldPosition, Quaternion.identity);
             PlayerCharacter.SetLocalPlayer(localPlayer);
+
+            StartCoroutine(AddOccupant(_playerSpawnPosition, localPlayer));
+        }
+
+
+        private void CreateEnemies()
+        {
+            Vector3 worldPosition = _boardRenderer.CellToWorld(new Vector3Int(_enemySpawnPosition.x, _enemySpawnPosition.y, 0));
+            EnemyCharacter enemy = Instantiate(_enemyPrefab, worldPosition, Quaternion.identity);
             
-            AddOccupant(_playerSpawnPosition, localPlayer);
+            StartCoroutine(AddOccupant(_enemySpawnPosition, enemy));
         }
 
 
@@ -222,6 +245,7 @@ namespace Boards
         {
             DrawGridGizmos();
             DrawPlayerSpawnGizmo();
+            DrawEnemySpawnGizmo();
         }
 
 
@@ -229,6 +253,14 @@ namespace Boards
         {
             Vector3 spawnPos = new(_playerSpawnPosition.x + 0.5f, _playerSpawnPosition.y + 0.5f, 0);
             Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(spawnPos, 0.5f);
+        }
+
+
+        private void DrawEnemySpawnGizmo()
+        {
+            Vector3 spawnPos = new(_enemySpawnPosition.x + 0.5f, _enemySpawnPosition.y + 0.5f, 0);
+            Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(spawnPos, 0.5f);
         }
 

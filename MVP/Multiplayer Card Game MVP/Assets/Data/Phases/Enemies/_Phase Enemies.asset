@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1de044b79ea84952802b17b82b38a6f0, type: 3}
-  m_Name: Phase_Enemies
+  m_Name: _Phase Enemies
   m_EditorClassIdentifier: 
   _name: Enemies' phase
   _displayBanner: 1
   _subPhases:
+  - {fileID: 11400000, guid: 629dec39337f46d43baadd21fd6a3fb5, type: 2}
   - {fileID: 11400000, guid: 905a18cec7a7bd842b1e6565dfeacdd3, type: 2}
   - {fileID: 11400000, guid: cad69fe998a2d2641a6ebe694a986aaa, type: 2}

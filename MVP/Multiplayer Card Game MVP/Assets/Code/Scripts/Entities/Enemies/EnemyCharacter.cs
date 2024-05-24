@@ -1,6 +1,7 @@
-﻿using System;
-using Boards;
+﻿using System.Collections;
+using System.Collections.Generic;
 using DamageSystem;
+using PhaseSystem;
 using UnityEngine;
 
 namespace Entities.Enemies
@@ -9,14 +10,26 @@ namespace Entities.Enemies
     [RequireComponent(typeof(EntityHealth))]
     public class EnemyCharacter : BoardEntity
     {
-        private EnemyMovement _movement;
+        [SerializeField]
+        private List<SequentialPhase<EnemyCharacter>> _actions;
+        
+        public EnemyMovement Movement { get; private set; }
+
+
+        public IEnumerator ExecuteActions()
+        {
+            foreach (SequentialPhase<EnemyCharacter> action in _actions)
+            {
+                yield return action.Execute(this);
+            }
+        }
 
 
         protected override void Awake()
         {
             base.Awake();
-            _movement = GetComponent<EnemyMovement>();
-            _movement.Initialize(this);
+            Movement = GetComponent<EnemyMovement>();
+            Movement.Initialize(this);
         }
 
 
@@ -29,31 +42,6 @@ namespace Entities.Enemies
         private void OnDisable()
         {
             EnemyManager.RemoveEnemy(this);
-        }
-    }
-    
-    
-    public class EnemyMovement : MonoBehaviour
-    {
-        [SerializeField]
-        [Range(1, 5)]
-        private int _movementRange = 1;
-        
-        private EnemyCharacter _enemy;
-
-
-        public void Initialize(EnemyCharacter enemy)
-        {
-            _enemy = enemy;
-        }
-
-
-        public void Move()
-        {
-            // Move to a random cell within the movement range, using BoardManager.Instance.MoveOccupant(occupant, cellPos);
-            // Also make sure that the position is inside the board bounds.
-            Vector2Int randomCell = BoardManager.Instance.GetRandomEmptyCell(_enemy.BoardPosition, _movementRange);
-            BoardManager.Instance.MoveOccupant(_enemy, randomCell);
         }
     }
 }
