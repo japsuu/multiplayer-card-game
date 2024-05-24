@@ -100,6 +100,12 @@ namespace Boards
         }
         
         
+        public Vector2Int GetRandomEmptyCell(Vector2Int origin, int range, bool includeOrigin = false)
+        {
+            return _board.GetRandomEmptyCell(origin, range, includeOrigin);
+        }
+        
+        
         /// <summary>
         /// Creates a new highlight group.
         /// </summary>

@@ -37,6 +37,7 @@ namespace Entities.Players
         protected override void Awake()
         {
             base.Awake();
+            
             Movement = GetComponent<PlayerMovement>();
         }
 
