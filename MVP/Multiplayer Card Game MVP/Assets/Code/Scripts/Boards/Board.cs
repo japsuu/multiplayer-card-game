@@ -22,6 +22,8 @@ namespace Boards
         /// </summary>
         public event Action<Vector2Int, ICellOccupant> OnCellOccupationChanged;
         
+        public event Action BoardUpdated;
+        
         /// <summary>
         /// Width of the board in cells.
         /// </summary>
@@ -101,6 +103,7 @@ namespace Boards
             yield return occupant?.OnAddedToBoard(pos);
             
             OnCellOccupationChanged?.Invoke(pos, occupant);
+            BoardUpdated?.Invoke();
         }
 
 
@@ -130,6 +133,7 @@ namespace Boards
             
             OnCellOccupationChanged?.Invoke(fromPos, null);
             OnCellOccupationChanged?.Invoke(toPos, occupant);
+            BoardUpdated?.Invoke();
         }
         
         
@@ -150,6 +154,7 @@ namespace Boards
             yield return occupant.OnRemovedFromBoard();
             
             OnCellOccupationChanged?.Invoke(position, null);
+            BoardUpdated?.Invoke();
         }
 
 
@@ -166,6 +171,7 @@ namespace Boards
                 }
             }
             BoardSizeChanged?.Invoke();
+            BoardUpdated?.Invoke();
         }
     }
 }

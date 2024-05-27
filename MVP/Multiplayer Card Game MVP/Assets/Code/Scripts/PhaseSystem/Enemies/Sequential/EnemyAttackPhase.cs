@@ -9,7 +9,9 @@ namespace PhaseSystem.Enemies.Sequential
     {
         protected override IEnumerator OnExecute(EnemyCharacter instance)
         {
-            yield return null;
+            instance.Attack.Execute(instance.BoardPosition);
+            instance.ResetAttackHighlighter();
+            yield return new WaitForSeconds(1f);
         }
     }
 }

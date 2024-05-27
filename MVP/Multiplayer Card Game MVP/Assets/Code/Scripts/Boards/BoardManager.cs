@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cameras;
 using Entities.Enemies;
@@ -17,6 +18,12 @@ namespace Boards
     [RequireComponent(typeof(BoardRenderer))]
     public class BoardManager : SingletonBehaviour<BoardManager>
     {
+        /// <summary>
+        /// Event that is invoked when the board is updated in any way.
+        /// Used to for example invalidate cell highlighters. 
+        /// </summary>
+        public static event Action BoardUpdated;
+        
         [Header("Board")]
         
         [SerializeField]
@@ -136,6 +143,28 @@ namespace Boards
                 yield return cell;
             }
         }
+
+
+        /// <summary>
+        /// Traverses cells downwards from the origin, stopping at the first cell that is not empty or the last cell before out of bounds.
+        /// </summary>
+        /// <param name="position">The origin position to start traversing from. Not included in the traversal.</param>
+        /// <returns></returns>
+        public IEnumerable<BoardCell> TraverseCells(Vector2Int position)
+        {
+            for (int y = position.y - 1; y >= 0; y--)
+            {
+                Vector2Int cellPos = new(position.x, y);
+                
+                if (!_board.TryGetCell(cellPos, out BoardCell cell))
+                    yield break;
+                
+                yield return cell;
+
+                if (cell.IsOccupied)
+                    yield break;
+            }
+        }
         
         
         public void HighlightCells(IEnumerable<Vector2Int> positions, bool isBlocked)
@@ -159,7 +188,13 @@ namespace Boards
         }
         
         
-        public IEnumerator AddOccupant(Vector2Int pos, ICellOccupant occupant) => _board.AddOccupant(pos, occupant);
+        public IEnumerator AddOccupant(Vector2Int pos, ICellOccupant occupant)
+        {
+            IEnumerator addOccupant = _board.AddOccupant(pos, occupant);
+            return addOccupant;
+        }
+
+
         public IEnumerator MoveOccupant(ICellOccupant occupant, Vector2Int to) => _board.MoveOccupant(occupant, to);
         public IEnumerator RemoveOccupant(ICellOccupant occupant) => _board.RemoveOccupant(occupant);
 
@@ -170,6 +205,7 @@ namespace Boards
             
             int length = _enemySide == EnemyBoardSide.Top ? _boardHeight / 2 : _boardWidth / 2;
             _board = new Board(_boardWidth, _boardHeight, length, _enemySide);
+            _board.BoardUpdated += BoardUpdated;
             
             _boardRenderer.InitializeGrid(_board);
         }

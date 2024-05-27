@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Boards
@@ -14,8 +15,8 @@ namespace Boards
         
         private readonly List<CellHighlighter> _highlighters = new();
         private CellHighlighter.PulseSettings _pulseSettings;
-        
-        
+
+
         /// <summary>
         /// Sets the pulse settings for every highlighter in this group.
         /// </summary>
@@ -37,6 +38,20 @@ namespace Boards
         {
             CellHighlighter highlighter = Instantiate(_highlighterPrefab, transform);
             highlighter.transform.position = (Vector3Int)relativePosition;
+            highlighter.Initialize(color, _pulseSettings);
+            _highlighters.Add(highlighter);
+        }
+        
+        
+        /// <summary>
+        /// Adds a new highlighter to this group.
+        /// </summary>
+        /// <param name="position">The cell's position.</param>
+        /// <param name="color">The highlighter's color.</param>
+        public void AddHighlighter(Vector2Int position, Color color)
+        {
+            CellHighlighter highlighter = Instantiate(_highlighterPrefab, transform);
+            highlighter.transform.position = (Vector3Int)position - transform.position + new Vector3(0.5f, 0.5f, 0f);
             highlighter.Initialize(color, _pulseSettings);
             _highlighters.Add(highlighter);
         }

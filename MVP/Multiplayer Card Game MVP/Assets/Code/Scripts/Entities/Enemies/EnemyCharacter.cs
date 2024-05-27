@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Boards;
 using DamageSystem;
 using PhaseSystem;
 using UnityEngine;
@@ -13,7 +15,14 @@ namespace Entities.Enemies
         [SerializeField]
         private List<SequentialPhase<EnemyCharacter>> _actions;
         
+        [SerializeField]
+        private EnemyAttack _attack;
+
+        private CellHighlightGroup _highlighterGroup;
+        
         public EnemyMovement Movement { get; private set; }
+        
+        public EnemyAttack Attack => _attack;
 
 
         public IEnumerator ExecuteActions()
@@ -23,6 +32,21 @@ namespace Entities.Enemies
                 yield return action.Execute(this);
             }
         }
+        
+        
+        public void UpdateAttackHighlighter()
+        {
+            ResetAttackHighlighter();
+            
+            foreach (Vector2Int cell in _attack.GetAffectedCellPositions(BoardPosition))
+                _highlighterGroup.AddHighlighter(cell, Color.yellow);
+        }
+        
+        
+        public void ResetAttackHighlighter()
+        {
+            _highlighterGroup.ResetHighlighters();
+        }
 
 
         protected override void Awake()
@@ -30,6 +54,13 @@ namespace Entities.Enemies
             base.Awake();
             Movement = GetComponent<EnemyMovement>();
             Movement.Initialize(this);
+        }
+
+
+        private void Start()
+        {
+            _highlighterGroup = BoardManager.Instance.CreateHighlightGroup();
+            _highlighterGroup.SetPulseSettings(CellHighlighter.PulseSettings.Attack);
         }
 
 

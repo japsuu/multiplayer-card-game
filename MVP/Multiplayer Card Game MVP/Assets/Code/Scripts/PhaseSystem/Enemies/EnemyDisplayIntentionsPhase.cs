@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Entities.Enemies;
 using UnityEngine;
 
 namespace PhaseSystem.Enemies
@@ -9,12 +10,15 @@ namespace PhaseSystem.Enemies
     [CreateAssetMenu(menuName = "Phases/Enemies/Display Intentions", fileName = "Phase_Enemies_Intentions_Display", order = 0)]
     public class EnemyDisplayIntentionsPhase : GamePhase
     {
-        public override string Name => ">Display Intentions";
+        public override string Name => "Display Intentions";
         
         
         protected sealed override IEnumerator OnExecute()
         {
-            Debug.LogWarning("TODO: Implement displaying intentions to the player.");
+            foreach (EnemyCharacter enemy in EnemyManager.Enemies)
+            {
+                enemy.UpdateAttackHighlighter();
+            }
             yield return null;
         }
     }
