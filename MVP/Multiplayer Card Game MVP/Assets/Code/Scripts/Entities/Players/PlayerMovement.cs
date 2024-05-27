@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Boards;
 using Cameras;
 using UnityEngine;
@@ -10,6 +11,10 @@ namespace Entities.Players
         [SerializeField]
         [Range(1, 5)]
         private int _movementRange = 2;
+        
+        [SerializeField]
+        [Range(1, 5)]
+        private int _movementActions = 1;
         
         private bool _allowMovement = true;
         
@@ -67,15 +72,6 @@ namespace Entities.Players
 
         private void HandleClickedCell(Vector2Int clickedCellPos)
         {
-            /*Vector2Int playerPos = PlayerCharacter.LocalPlayer.BoardPosition;
-            bool wasPlayerClicked = clickedCellPos == playerPos;
-            // If the player was clicked and there are no highlighted cells, highlight the cells the player could move to.
-            if (wasPlayerClicked && !hasHighlightedCells)
-            {
-                StartHighlightCells(playerPos);
-                return;
-            }*/
-            
             bool hasHighlightedCells = _availableMovementCells.Count > 0;
             
             if (!hasHighlightedCells)
@@ -95,13 +91,22 @@ namespace Entities.Players
         private void MovePlayer(Vector2Int cellPos)
         {
             PlayerMovementsThisTurn++;
-            StartCoroutine(BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos));
+            StartCoroutine(MoveCoroutine(cellPos));
+        }
+
+
+        private IEnumerator MoveCoroutine(Vector2Int cellPos)
+        {
+            yield return BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
+            
+            if (PlayerMovementsThisTurn < _movementActions)
+                StartHighlightCells(cellPos);
         }
 
 
         private void StartHighlightCells(Vector2Int playerPos)
         {
-            _availableMovementCells.Clear();
+            StopHighlightCells();
 
             foreach (BoardCell cell in BoardManager.Instance.GetEmptyCells(playerPos, _movementRange, CellSide.Player))
             {

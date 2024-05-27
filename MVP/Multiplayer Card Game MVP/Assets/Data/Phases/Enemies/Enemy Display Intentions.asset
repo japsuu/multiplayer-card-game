@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6eba1f8dd4c4746a748ac8180e9acc0, type: 3}
-  m_Name: Intentions Display
+  m_Name: Enemy Display Intentions
   m_EditorClassIdentifier: 
   _name: display intentions
   _displayBanner: 0
