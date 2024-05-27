@@ -47,5 +47,17 @@ namespace Entities.Players
             LocalPlayerDestroyed?.Invoke();
             LocalPlayer = null;
         }
+
+
+        private void OnEnable()
+        {
+            PlayerManager.Add(this);
+        }
+        
+        
+        private void OnDisable()
+        {
+            PlayerManager.Remove(this);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace PhaseSystem.Enemies
         
         protected sealed override IEnumerator OnExecute()
         {
-            Debug.LogWarning("TODO: Implement determining enemy intentions.");
+#warning TODO: Implement determining enemy intentions.
             yield return null;
         }
     }

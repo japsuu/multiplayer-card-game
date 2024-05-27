@@ -56,6 +56,7 @@ namespace Boards
         
         public bool TryGetCell(Vector2Int pos, out BoardCell cell) => TryGetCell(pos.x, pos.y, out cell);
         public bool TryGetCell(int x, int y, out BoardCell cell) => _board.TryGetCell(x, y, out cell);
+        public bool IsCellEmpty(Vector2Int pos) => TryGetCell(pos, out BoardCell cell) && !cell.IsOccupied;
 
 
         /// <summary>
@@ -146,23 +147,74 @@ namespace Boards
 
 
         /// <summary>
-        /// Traverses cells downwards from the origin, stopping at the first cell that is not empty or the last cell before out of bounds.
+        /// Traverses cells towards direction from the origin, stops at the last cell before out of bounds.
         /// </summary>
         /// <param name="position">The origin position to start traversing from. Not included in the traversal.</param>
+        /// <param name="direction">The direction to traverse in.</param>
         /// <returns></returns>
-        public IEnumerable<BoardCell> TraverseCells(Vector2Int position)
+        public IEnumerable<BoardCell> TraverseCells(Vector2Int position, GridDirection direction)
         {
-            for (int y = position.y - 1; y >= 0; y--)
+            switch (direction)
             {
-                Vector2Int cellPos = new(position.x, y);
+                case GridDirection.Up:
+                {
+                    int x = position.x;
+                    for (int y = position.y + 1; y < _boardHeight; y++)
+                    {
+                        Vector2Int cellPos = new(x, y);
                 
-                if (!_board.TryGetCell(cellPos, out BoardCell cell))
-                    yield break;
-                
-                yield return cell;
+                        if (!_board.TryGetCell(cellPos, out BoardCell cell))
+                            yield break;
 
-                if (cell.IsOccupied)
-                    yield break;
+                        yield return cell;
+                    }
+                    break;
+                }
+                case GridDirection.Down:
+                {
+                    int x = position.x;
+                    for (int y = position.y - 1; y >= 0; y--)
+                    {
+                        Vector2Int cellPos = new(x, y);
+                
+                        if (!_board.TryGetCell(cellPos, out BoardCell cell))
+                            yield break;
+
+                        yield return cell;
+                    }
+
+                    break;
+                }
+                case GridDirection.Left:
+                {
+                    int y = position.y;
+                    for (int x = position.x - 1; x >= 0; x--)
+                    {
+                        Vector2Int cellPos = new(x, y);
+                
+                        if (!_board.TryGetCell(cellPos, out BoardCell cell))
+                            yield break;
+
+                        yield return cell;
+                    }
+                    break;
+                }
+                case GridDirection.Right:
+                {
+                    int y = position.y;
+                    for (int x = position.x + 1; x < _boardWidth; x++)
+                    {
+                        Vector2Int cellPos = new(x, y);
+                
+                        if (!_board.TryGetCell(cellPos, out BoardCell cell))
+                            yield break;
+
+                        yield return cell;
+                    }
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
         }
         

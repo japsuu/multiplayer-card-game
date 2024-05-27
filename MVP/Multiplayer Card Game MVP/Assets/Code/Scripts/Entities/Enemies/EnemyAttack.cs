@@ -15,9 +15,12 @@ namespace Entities.Enemies
         public IEnumerable<Vector2Int> GetAffectedCellPositions(Vector2Int origin)
         {
             // Traverse cells downwards from the origin, stopping at the first cell that is not empty.
-            foreach (BoardCell cell in BoardManager.Instance.TraverseCells(origin))
+            foreach (BoardCell cell in BoardManager.Instance.TraverseCells(origin, GridDirection.Down))
             {
                 yield return cell.Position;
+                
+                if (cell.IsOccupied)
+                    yield break;
             }
         }
         

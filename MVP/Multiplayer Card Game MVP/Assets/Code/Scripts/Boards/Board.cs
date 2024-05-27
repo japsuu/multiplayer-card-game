@@ -111,6 +111,12 @@ namespace Boards
         {
             Vector2Int fromPos = occupant.BoardPosition;
             
+            if (fromPos == toPos)
+            {
+                Debug.LogWarning($"Occupant {occupant.GetType()} is already at the target position {toPos}.");
+                yield break;
+            }
+            
             if (!TryGetCell(fromPos, out BoardCell fromCell))
                 Debug.LogError($"Could not get cell at {fromPos}.");
             

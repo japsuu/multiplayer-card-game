@@ -75,7 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementRange: 1
-  _movementActions: 1
+  _movementActions: 5
 --- !u!1 &7008291091343679817
 GameObject:
   m_ObjectHideFlags: 0

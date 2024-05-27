@@ -63,7 +63,7 @@ namespace PhaseSystem
         public static void RequestEndTurn()
         {
             EndTurnRequested = true;
-            print("End turn requested.");
+            // print("End turn requested.");
         }
         
         
@@ -75,7 +75,7 @@ namespace PhaseSystem
                     _currentPhase = 0;
 
                 GamePhase phase = _phases[_currentPhase];
-                Debug.Log($"Executing phase '{phase.Name}'...");
+                // Debug.Log($"Executing phase '{phase.Name}'...");
                 
                 yield return phase.Execute();
                 

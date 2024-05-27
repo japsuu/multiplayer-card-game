@@ -68,7 +68,7 @@ namespace Cards
         {
             CardsPlayedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
-            Debug.LogWarning("TODO: Show tabled cards");
+#warning TODO: Show tabled cards
         }
 
 
@@ -76,7 +76,7 @@ namespace Cards
         {
             CardsPlayedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
-            Debug.LogWarning("TODO: Hide tabled cards");
+#warning TODO: Hide tabled cards
         }
         
         
