@@ -39,8 +39,19 @@ namespace Entities.Enemies
         public IEnumerator Move()
         {
             int executedMovements = 0;
+
+            PlayerCharacter nearestPlayer = PlayerManager.FindNearestHorizontalPlayer(_enemy.BoardPosition);
             
-            int closestPlayerX = PlayerManager.FindNearestHorizontalPlayer(_enemy.BoardPosition).BoardPosition.x;
+            // If no player is found, do not move.
+            if (nearestPlayer == null)
+            {
+                if (Globals.VerboseEnemyMovement)
+                    print("No player found to move towards.");
+                
+                yield break;
+            }
+            
+            int closestPlayerX = nearestPlayer.BoardPosition.x;
             
             // Determine whether the enemy should move left or right to reach the closest player.
             Vector2Int[] prioritizedDirections = _enemy.BoardPosition.x < closestPlayerX ? PrioritizedDirectionsRight : PrioritizedDirectionsLeft;
