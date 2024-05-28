@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Boards;
+using DamageNumbersPro;
 using DamageSystem;
 using DG.Tweening;
 using UnityEngine;
@@ -10,6 +11,12 @@ namespace Entities
     [RequireComponent(typeof(EntityHealth))]
     public abstract class BoardEntity : MonoBehaviour, ICellOccupant
     {
+        [SerializeField]
+        private DamageNumber _damageNumberPrefab;
+        
+        [SerializeField]
+        private DamageNumber _killedTextPrefab;
+        
         public event Action Died;
         
         public EntityHealth Health { get; private set; }
@@ -43,6 +50,25 @@ namespace Entities
         }
 
 
+        protected virtual void OnEnable()
+        {
+            Health.HealthChanged += OnHealthChanged;
+        }
+
+
+        protected virtual void OnDisable()
+        {
+            Health.HealthChanged -= OnHealthChanged;
+        }
+
+
+        private void OnHealthChanged(HealthChangedArgs args)
+        {
+            if (args.IsDamage)
+                _damageNumberPrefab.Spawn(transform.position, args.HealthDifference.ToString());
+        }
+
+
         protected virtual void OnDied()
         {
             StartCoroutine(DeathCoroutine());
@@ -52,6 +78,8 @@ namespace Entities
         private IEnumerator DeathCoroutine()
         {
             Died?.Invoke();
+            
+            _killedTextPrefab.Spawn(transform.position, "Dead!");
             
             yield return BoardManager.Instance.RemoveOccupant(this);
             

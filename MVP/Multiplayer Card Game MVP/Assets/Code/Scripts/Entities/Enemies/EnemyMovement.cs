@@ -45,15 +45,16 @@ namespace Entities.Enemies
             // Determine whether the enemy should move left or right to reach the closest player.
             Vector2Int[] prioritizedDirections = _enemy.BoardPosition.x < closestPlayerX ? PrioritizedDirectionsRight : PrioritizedDirectionsLeft;
 
+            // While movements available and cannot attack the player, move towards the player.
             while (executedMovements < _movementActions && _enemy.BoardPosition.x != closestPlayerX)
             {
+                // Check all directions based on their priority, and assign a target position if a valid one is found.
                 Vector2Int? targetPos = null;
                 foreach (Vector2Int dir in prioritizedDirections)
                 {
                     Vector2Int direction = new(dir.x, dir.y * _verticalMovementMultiplier);
                 
-                    bool outOfBounds = BoardManager.Instance.TryGetCell(_enemy.BoardPosition + direction, out BoardCell cell);
-
+                    bool outOfBounds = !BoardManager.Instance.TryGetCell(_enemy.BoardPosition + direction, out BoardCell cell);
                     if (outOfBounds)
                     {
                         // Flip the vertical movement multiplier to move in the opposite vertical direction.

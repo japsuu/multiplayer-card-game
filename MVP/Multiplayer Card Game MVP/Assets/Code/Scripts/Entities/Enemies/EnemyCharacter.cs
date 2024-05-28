@@ -24,6 +24,7 @@ namespace Entities.Enemies
             
             foreach (Vector2Int cell in _attack.GetAffectedCellPositions(BoardPosition))
                 _highlighterGroup.AddHighlighter(cell, Color.yellow);
+            print("EnemyCharacter.UpdateAttackHighlighter");
         }
         
         
@@ -48,15 +49,17 @@ namespace Entities.Enemies
         }
 
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             EnemyManager.AddEnemy(this);
             BoardManager.BoardUpdated += UpdateAttackHighlighter;
         }
         
         
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             EnemyManager.RemoveEnemy(this);
             BoardManager.BoardUpdated -= UpdateAttackHighlighter;
         }
