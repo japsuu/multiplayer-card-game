@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f7b38f46fe436cbb3fa584f74c920a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _damageNumberPrefab: {fileID: 1351521526588478645, guid: ad3a28079b67b06469ee9e20b9f7a7ce, type: 3}
+  _killedTextPrefab: {fileID: 6706452153368054447, guid: 59a3a60db6d993849a61ddee791bfad0, type: 3}
   _attack:
     _damage: 20
 --- !u!114 &239213812491480071
