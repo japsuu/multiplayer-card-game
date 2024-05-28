@@ -257,9 +257,15 @@ namespace Boards
             
             int length = _enemySide == EnemyBoardSide.Top ? _boardHeight / 2 : _boardWidth / 2;
             _board = new Board(_boardWidth, _boardHeight, length, _enemySide);
-            _board.BoardUpdated += BoardUpdated;
+            _board.BoardUpdated += OnBoardUpdated;
             
             _boardRenderer.InitializeGrid(_board);
+        }
+
+
+        private void OnBoardUpdated()
+        {
+            BoardUpdated?.Invoke();
         }
 
 
