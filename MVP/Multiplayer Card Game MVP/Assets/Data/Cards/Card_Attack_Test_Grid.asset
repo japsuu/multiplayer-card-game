@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a7562bbe95a4e7ea3adcdb299f1fd1f, type: 3}
   m_Name: Card_Attack_Test_Grid
   m_EditorClassIdentifier: 
-  _cardName: Test Cross
-  _description: Testing card numero uno. Cross attack pattern
+  _cardName: Cross
+  _description: Testing card. Cross attack pattern
   _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
-  _playType: 1
   _manaCost: 3
   _attackPattern: {fileID: 11400000, guid: 5d0cd5a6558b0e44d84be9e2ba5dbf59, type: 2}
+  _damage: 10

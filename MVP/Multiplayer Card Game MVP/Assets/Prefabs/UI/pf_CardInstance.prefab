@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _nameText: {fileID: 6476022326779527276}
-  _manaCostText: {fileID: 5015074499843065118}
   _descriptionText: {fileID: 4239656033330465649}
   _artImage: {fileID: 8954034474206412929}
   _discardButton: {fileID: 4470711576000847518}
@@ -633,8 +632,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -22.5, y: -5}
-  m_SizeDelta: {x: -55, y: 40}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -10, y: 40}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2018439092622379170
 CanvasRenderer:
@@ -750,7 +749,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2238286969319596102
 RectTransform:
   m_ObjectHideFlags: 0

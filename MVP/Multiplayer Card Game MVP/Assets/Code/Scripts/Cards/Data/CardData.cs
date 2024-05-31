@@ -16,13 +16,13 @@ namespace Cards.Data
         [SerializeField]
         private Sprite _sprite;
 
-        [SerializeField]
-        private int _manaCost;
+        // [SerializeField]
+        // private int _manaCost;
         
         public string CardName => _cardName;
         public string Description => _description;
         public Sprite Sprite => _sprite;
-        public int ManaCost => _manaCost;
+        // public int ManaCost => _manaCost;
         
         
         /// <summary>

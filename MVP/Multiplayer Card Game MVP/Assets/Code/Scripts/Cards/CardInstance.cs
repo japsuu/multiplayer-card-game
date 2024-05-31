@@ -16,10 +16,11 @@ namespace Cards
         [SerializeField]
         private TMP_Text _nameText;
         
-        [SerializeField]
-        private TMP_Text _manaCostText;
+        // [SerializeField]
+        // private TMP_Text _manaCostText;
         
         [SerializeField]
+        [TextArea(3, 5)]
         private TMP_Text _descriptionText;
         
         [SerializeField]
@@ -41,7 +42,7 @@ namespace Cards
             Data = data;
             
             _nameText.text = data.CardName;
-            _manaCostText.text = data.ManaCost.ToString();
+            // _manaCostText.text = data.ManaCost.ToString();
             _descriptionText.text = data.Description;
             _artImage.sprite = data.Sprite;
             

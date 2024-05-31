@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a7562bbe95a4e7ea3adcdb299f1fd1f, type: 3}
   m_Name: Card_Attack_Test_LineV
   m_EditorClassIdentifier: 
-  _cardName: Test Line
-  _description: Testing card numero dos. Vertical line attack pattern
+  _cardName: Line
+  _description: Testing card. Vertical line attack pattern
   _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
-  _playType: 1
   _manaCost: 1
   _attackPattern: {fileID: 11400000, guid: b248134a4ffea544ca1a7579904aa7a9, type: 2}
+  _damage: 10
