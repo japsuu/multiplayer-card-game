@@ -89,6 +89,7 @@ namespace PhaseSystem
         
         public static void NotifyPhaseChange(GamePhase phase)
         {
+            isSkipPhaseRequested = false;
             PhaseChange?.Invoke(phase);
         }
         

@@ -33,7 +33,7 @@ namespace PhaseSystem.Players
             }
             
             // Yield until the player ends their turn.
-            while (!GameLoopManager.IsEndTurnRequested())
+            while (!GameLoopManager.IsEndTurnRequested() && !GameLoopManager.IsSkipPhaseRequested())
                 yield return null;
         }
 
