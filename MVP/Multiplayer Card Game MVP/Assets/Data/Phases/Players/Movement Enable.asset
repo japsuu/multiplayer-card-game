@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658475f0d0904401b5474779df5a3f67, type: 3}
-  m_Name: Enemy Determine Intentions
+  m_Script: {fileID: 11500000, guid: 6d94127bd495496cb41c7753712e4ce9, type: 3}
+  m_Name: Movement Enable
   m_EditorClassIdentifier: 
-  _name: determine intentions
+  _name: enable movement
   _displayBanner: 0
+  _displaySkipButton: 0
+  _allowMovement: 1

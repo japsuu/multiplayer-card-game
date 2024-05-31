@@ -4,20 +4,20 @@ using UnityEngine.Events;
 
 namespace UI
 {
-    public class EndTurnButton : ToggleableEventButton
+    public class SkipPhaseButton : ToggleableEventButton
     {
-        protected override UnityAction ClickAction => GameLoopManager.RequestEndTurn;
+        protected override UnityAction ClickAction => GameLoopManager.RequestSkipPhase;
 
 
         protected override void SubscribeToEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowEndTurnButton += setVisibility;
+            GameLoopManager.RequestShowSkipButton += setVisibility;
         }
 
 
         protected override void UnsubscribeFromEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowEndTurnButton -= setVisibility;
+            GameLoopManager.RequestShowSkipButton -= setVisibility;
         }
     }
 }

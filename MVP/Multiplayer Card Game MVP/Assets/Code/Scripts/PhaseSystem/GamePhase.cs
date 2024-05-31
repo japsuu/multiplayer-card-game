@@ -12,11 +12,17 @@ namespace PhaseSystem
         [SerializeField]
         private bool _displayBanner = true;
 
+        [SerializeField]
+        private bool _displaySkipButton = true;
+
         public virtual string Name => _name;
 
 
         public IEnumerator Execute()
         {
+            GameLoopManager.NotifyPhaseChange(this);
+            GameLoopManager.SetShowSkipButton(_displaySkipButton);
+            
             if (_displayBanner)
                 yield return PhaseBanner.Instance.DisplayPhase(Name);
 

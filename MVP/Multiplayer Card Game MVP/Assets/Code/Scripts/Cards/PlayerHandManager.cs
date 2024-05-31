@@ -11,6 +11,9 @@ namespace Cards
         [Header("General")]
         
         [SerializeField]
+        private int _drawLimit = 5;
+        
+        [SerializeField]
         private Transform _cardRoot;
         
         [SerializeField]
@@ -43,6 +46,14 @@ namespace Cards
         private Vector3 _cardsPanelOriginalPos;
         
         public int CardsPlayedThisTurn { get; private set; }
+        public int CardCount => _hand.Cards.Count;
+        public int DrawLimit => _drawLimit;
+        
+        
+        public CardData RemoveCardFromDrawPile()
+        {
+            return _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
+        }
 
 
         public void AddCardToHand(CardData cardData)

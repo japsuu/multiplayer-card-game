@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf197866059d409a81cd7a7fc263f016, type: 3}
-  m_Name: Enemy Show Phase Banner
+  m_Script: {fileID: 11500000, guid: c08052b7cb274203a7bcf2ae722d2481, type: 3}
+  m_Name: Hand Cards Show
   m_EditorClassIdentifier: 
-  _name: Enemies' phase
-  _displayBanner: 1
+  _name: show hand cards
+  _displayBanner: 0
   _displaySkipButton: 0
+  _visibility: 0
