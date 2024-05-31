@@ -10,16 +10,28 @@ namespace PhaseSystem.Players
     [CreateAssetMenu(menuName = "Phases/Player/Discard Cards", fileName = "Phase_Players_Discard", order = 0)]
     public class PlayerDiscardPhase : GamePhase
     {
+        protected override IEnumerator OnEnter()
+        {
+            PlayerHandManager.Instance.AllowDiscardCards(true);
+            return base.OnEnter();
+        }
+
+
         protected override IEnumerator OnExecute()
         {
-            // Draw cards until the player reaches their draw limit.
             while (PlayerHandManager.Instance.CardCount > 0)
             {
                 while (!GameLoopManager.IsEndTurnRequested() && !GameLoopManager.IsSkipPhaseRequested())
                     yield return null;
                 yield break;
-#warning TODO: Implement the player's ability to discard cards.
             }
+        }
+        
+        
+        protected override IEnumerator OnExit()
+        {
+            PlayerHandManager.Instance.AllowDiscardCards(false);
+            return base.OnExit();
         }
     }
 }

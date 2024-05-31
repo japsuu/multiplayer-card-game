@@ -24,6 +24,9 @@ namespace Cards
         
         [SerializeField]
         private Image _artImage;
+
+        [SerializeField]
+        private Button _discardButton;
         
         private Vector3 _homePosition;
         private bool _isBeingDragged;
@@ -41,6 +44,16 @@ namespace Cards
             _manaCostText.text = data.ManaCost.ToString();
             _descriptionText.text = data.Description;
             _artImage.sprite = data.Sprite;
+            
+            _discardButton.onClick.AddListener(Discard);
+            
+            SetAllowDiscard(false);
+        }
+        
+        
+        public void SetAllowDiscard(bool allow)
+        {
+            _discardButton.gameObject.SetActive(allow);
         }
         
         
@@ -76,6 +89,12 @@ namespace Cards
             
             Data.OnEndDrag(this, true);
             _isBeingDragged = false;
+        }
+
+
+        private void Discard()
+        {
+            PlayerHandManager.Instance.DiscardCard(this);
         }
 
 

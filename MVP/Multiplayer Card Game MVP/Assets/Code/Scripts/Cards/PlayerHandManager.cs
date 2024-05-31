@@ -62,6 +62,13 @@ namespace Cards
             card.Initialize(cardData);
             _hand.Cards.Add(card);
         }
+        
+        
+        public void AllowDiscardCards(bool allow)
+        {
+            foreach (CardInstance card in _hand.Cards)
+                card.SetAllowDiscard(allow);
+        }
 
 
         public void PlayCard(CardInstance cardInstance, IEnumerator playCoroutine)
@@ -70,6 +77,12 @@ namespace Cards
             
             StartCoroutine(playCoroutine);
             
+            DiscardCard(cardInstance);
+        }
+        
+        
+        public void DiscardCard(CardInstance cardInstance)
+        {
             _hand.Cards.Remove(cardInstance);
             Destroy(cardInstance.gameObject);
         }
