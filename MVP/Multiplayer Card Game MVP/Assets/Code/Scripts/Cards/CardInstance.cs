@@ -120,14 +120,14 @@ namespace Cards
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (!GameLoopManager.AllowCardDragging)
-                return;
-            
             if(_hasBeenPlayed)
                 return;
             
             if (HasBeenActivated)
             {
+                if (!GameLoopManager.AllowCardPlay)
+                    return;
+                
                 if (Data.CanBePlayed)
                 {
                     // Create a highlighter group for the attack pattern of this card.
@@ -151,6 +151,8 @@ namespace Cards
                     return;
                 }
             }
+            else if (!GameLoopManager.AllowCardActivation)
+                return;
             
             _isBeingDragged = true;
         }
