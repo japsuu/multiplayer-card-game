@@ -1,5 +1,4 @@
-﻿using System;
-using PhaseSystem;
+﻿using PhaseSystem;
 using TMPro;
 using UnityEngine;
 

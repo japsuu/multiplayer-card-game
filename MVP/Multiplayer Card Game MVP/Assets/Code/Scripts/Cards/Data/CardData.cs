@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Cards.AttackPatterns;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Cards.Data
 {
