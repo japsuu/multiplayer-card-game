@@ -46,6 +46,7 @@ namespace Cards
         private Vector3 _cardsPanelOriginalPos;
         
         public int CardsPlayedThisTurn { get; private set; }
+        public int CardsActivatedThisTurn { get; private set; }
         public int CardCount => _hand.Cards.Count;
         public int DrawLimit => _drawLimit;
         
@@ -82,25 +83,28 @@ namespace Cards
             
             DiscardCard(cardInstance);
         }
+
+
+        public void ActivateCard(CardInstance card)
+        {
+            CardsActivatedThisTurn++;
+            card.Activate();
+            _hand.Cards.Remove(card);
+        }
         
         
         public void DiscardCard(CardInstance cardInstance)
         {
-            RemoveCardFromHand(cardInstance);
+            _hand.Cards.Remove(cardInstance);
             Destroy(cardInstance.gameObject);
 #warning TODO: Move the card to the discard pile
-        }
-        
-        
-        public void RemoveCardFromHand(CardInstance cardInstance)
-        {
-            _hand.Cards.Remove(cardInstance);
         }
 
 
         public void ShowHand()
         {
             CardsPlayedThisTurn = 0;
+            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
 #warning TODO: Show tabled cards
         }
@@ -109,6 +113,7 @@ namespace Cards
         public void HideHand()
         {
             CardsPlayedThisTurn = 0;
+            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
 #warning TODO: Hide tabled cards
         }

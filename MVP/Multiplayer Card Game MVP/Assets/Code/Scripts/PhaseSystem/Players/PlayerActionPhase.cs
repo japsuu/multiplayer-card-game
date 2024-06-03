@@ -52,6 +52,6 @@ namespace PhaseSystem.Players
         }
 
 
-        private static bool HasPlayerDoneAction() => PlayerHandManager.Instance.CardsPlayedThisTurn > 0 || PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0;
+        private static bool HasPlayerDoneAction() => PlayerHandManager.Instance.CardsPlayedThisTurn > 0 || PlayerHandManager.Instance.CardsActivatedThisTurn > 0 || PlayerCharacter.LocalPlayer.Movement.PlayerMovementsThisTurn > 0;
     }
 }

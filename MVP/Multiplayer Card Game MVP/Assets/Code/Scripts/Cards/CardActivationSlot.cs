@@ -78,7 +78,7 @@ namespace Cards
             _currentCard.transform.SetParent(_cardRoot, false);
             _currentCard.transform.localPosition = Vector3.zero;
             
-            _currentCard.Activate();
+            PlayerHandManager.Instance.ActivateCard(card);
         }
 
 

@@ -185,7 +185,6 @@ namespace Cards
             {
                 if (_belowReceiver != null && _belowReceiver.CanReceiveCard(this))
                 {
-                    PlayerHandManager.Instance.RemoveCardFromHand(this);
                     _belowReceiver.ReceiveCard(this);
                 }
             }
