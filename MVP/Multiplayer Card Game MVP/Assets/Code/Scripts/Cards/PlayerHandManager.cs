@@ -81,7 +81,10 @@ namespace Cards
             
             StartCoroutine(playCoroutine);
             
-            DiscardCard(cardInstance);
+            cardInstance.FlagAsPlayed();
+            
+            if (Globals.DiscardPlayedCards)
+                DiscardCard(cardInstance);
         }
 
 

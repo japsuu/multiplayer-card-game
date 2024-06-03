@@ -32,6 +32,7 @@ namespace Cards
         private Button _discardButton;
         
         private Vector3 _homePosition;
+        private bool _hasBeenPlayed;
         private bool _isBeingDragged;
         private ICardInstanceReceiver _belowReceiver;
         private readonly List<RaycastResult> _raycastResults = new();
@@ -65,8 +66,18 @@ namespace Cards
         
         public void Activate()
         {
+            if(_hasBeenPlayed)
+                throw new Exception("The card has already been played.");
+            
             HasBeenActivated = true;
             Destroy(_discardButton.gameObject);     // Just in case
+        }
+
+
+        public void FlagAsPlayed()
+        {
+            _hasBeenPlayed = true;
+            gameObject.AddComponent<CanvasGroup>().alpha = 0.2f;
         }
 
 
@@ -79,13 +90,15 @@ namespace Cards
             if (!HasBeenActivated)
                 throw new Exception("Card is not activated.");
             
-            HasBeenActivated = false;
             Discard();
         }
         
         
         public void SetAllowDiscard(bool allow)
         {
+            if(_hasBeenPlayed)
+                throw new Exception("The card has already been played.");
+
             if (HasBeenActivated)
                 throw new Exception("Card is activated.");
             
@@ -95,6 +108,9 @@ namespace Cards
         
         public void UpdateHomePosition(Vector3 homePosition)
         {
+            if(_hasBeenPlayed)
+                throw new Exception("The card has already been played.");
+
             if (HasBeenActivated)
                 throw new Exception("Card is activated.");
 
@@ -105,6 +121,9 @@ namespace Cards
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (!GameLoopManager.AllowCardDragging)
+                return;
+            
+            if(_hasBeenPlayed)
                 return;
             
             if (HasBeenActivated)
@@ -214,6 +233,9 @@ namespace Cards
 
         private void Update()
         {
+            if(_hasBeenPlayed)
+                return;
+            
             if (_isBeingDragged)
             {
                 RaycastForReceiver();
