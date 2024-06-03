@@ -11,6 +11,13 @@ namespace PhaseSystem.Players
     [CreateAssetMenu(menuName = "Phases/Player/Action Phase", fileName = "Phase_Players_Action", order = 0)]
     public class PlayerActionPhase : GamePhase
     {
+        protected override IEnumerator OnEnter()
+        {
+            GameLoopManager.AllowCardDragging = true;
+            return base.OnEnter();
+        }
+        
+        
         protected override IEnumerator OnExecute()
         {
             // Since the player can either play cards or move, we wait until the player does one of these actions.
@@ -35,6 +42,13 @@ namespace PhaseSystem.Players
             // Yield until the player ends their turn.
             while (!GameLoopManager.IsEndTurnRequested() && !GameLoopManager.IsSkipPhaseRequested())
                 yield return null;
+        }
+
+
+        protected override IEnumerator OnExit()
+        {
+            GameLoopManager.AllowCardDragging = false;
+            return base.OnExit();
         }
 
 

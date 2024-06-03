@@ -17,6 +17,8 @@ namespace PhaseSystem
         
         private static bool isEndTurnRequested;
         public static bool IsEndTurnRequested() => isEndTurnRequested;
+
+        public static bool AllowCardDragging;
         
         public static event Action PlayerTurnStart;
         public static event Action PlayerTurnEnd;

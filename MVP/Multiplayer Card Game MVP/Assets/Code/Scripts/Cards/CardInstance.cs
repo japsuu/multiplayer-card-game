@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Boards;
 using Cards.Data;
+using PhaseSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -103,6 +104,9 @@ namespace Cards
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (!GameLoopManager.AllowCardDragging)
+                return;
+            
             if (HasBeenActivated)
             {
                 if (Data.CanBePlayed)
