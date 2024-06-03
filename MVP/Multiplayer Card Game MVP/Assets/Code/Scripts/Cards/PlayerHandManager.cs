@@ -101,6 +101,14 @@ namespace Cards
             _hand.Cards.Remove(cardInstance);
             Destroy(cardInstance.gameObject);
 #warning TODO: Move the card to the discard pile
+            /*cardInstance.transform.SetParent(CanvasManager.Instance.OverlayCanvasRoot, true);
+            cardInstance.transform.localScale = Vector3.one;
+            
+            // Tween the card location to the bottom-right corner of the screen, then destroy it
+            cardInstance.gameObject.transform.DOMove(new Vector3(Screen.width, 0, 0), 2f).OnComplete(() =>
+            {
+                Destroy(cardInstance.gameObject);
+            });*/
         }
 
 
@@ -109,7 +117,6 @@ namespace Cards
             CardsPlayedThisTurn = 0;
             CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
-#warning TODO: Show tabled cards
         }
 
 
@@ -118,7 +125,6 @@ namespace Cards
             CardsPlayedThisTurn = 0;
             CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
-#warning TODO: Hide tabled cards
         }
         
         
