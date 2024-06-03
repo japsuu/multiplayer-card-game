@@ -34,7 +34,7 @@ namespace Cards
             }
 
             Vector3 mouseWorldPos = _camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 startPos = _camera.ScreenToWorldPoint(_origin.position);
+            Vector3 startPos = _origin.position;
 
             Vector3 endPos = BoardManager.Instance.TrySnapToCell(mouseWorldPos, out Vector3 cellPos) ? cellPos : mouseWorldPos;
             endPos.z = _lineZOffset;
@@ -56,6 +56,9 @@ namespace Cards
         /// <param name="origin">The transform the targeting arrow originates from.</param>
         public void Activate(Transform origin)
         {
+            if (_isActive)
+                return;
+            
             _origin = origin;
             _lineRenderer.enabled = true;
             _isActive = true;
@@ -66,6 +69,9 @@ namespace Cards
         /// </summary>
         public void Deactivate()
         {
+            if (!_isActive)
+                return;
+            
             _lineRenderer.enabled = false;
             _isActive = false;
         }

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Cards.AttackPatterns;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cards.Data
 {
@@ -7,39 +10,33 @@ namespace Cards.Data
     /// </summary>
     public abstract class CardData : ScriptableObject
     {
+        [Header("Card Data")]
+        
         [SerializeField]
         private string _cardName;
 
         [SerializeField]
+        [TextArea(3, 5)]
         private string _description;
 
         [SerializeField]
         private Sprite _sprite;
-
-        // [SerializeField]
-        // private int _manaCost;
+        
+        public abstract CellPattern CellPattern { get; }
         
         public string CardName => _cardName;
         public string Description => _description;
         public Sprite Sprite => _sprite;
-        // public int ManaCost => _manaCost;
-        
         
         /// <summary>
-        /// Called when the user has started to drag the card.
+        /// Whether the card can be played or not (if it affects any cells when played).
+        /// If the card doesn't affect any cells when played, this is false.
+        /// As an example a card that only has passive effects while activated has this set to false.
         /// </summary>
-        public virtual void OnStartDrag(CardInstance draggedCard) { }
+        public bool CanBePlayed => CellPattern != null;
         
-        
-        /// <summary>
-        /// Called when the user is dragging the card.
-        /// </summary>
-        public virtual void OnDrag(CardInstance draggedCard) { }
-        
-        
-        /// <summary>
-        /// Called when the user has stopped dragging the card.
-        /// </summary>
-        public virtual void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard) { }
+
+#warning Change "cell" to an IBoardRegion
+        public abstract IEnumerator ApplyBoardEffects(Vector2Int cell);
     }
 }

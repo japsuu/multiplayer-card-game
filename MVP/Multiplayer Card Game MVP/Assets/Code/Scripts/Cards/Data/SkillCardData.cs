@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Cards.AttackPatterns;
 using UnityEngine;
 
 namespace Cards.Data
@@ -6,28 +7,11 @@ namespace Cards.Data
     [CreateAssetMenu(menuName = "Cards/Create Skill Card", fileName = "Card_Skill_", order = 0)]
     public class SkillCardData : CardData
     {
-        public override void OnDrag(CardInstance draggedCard)
-        {
-            base.OnDrag(draggedCard);
-            
-            draggedCard.transform.position = (Vector2)Input.mousePosition;
-        }
-
-
-        public override void OnEndDrag(CardInstance draggedCard, bool shouldPlayCard)
-        {
-            base.OnEndDrag(draggedCard, shouldPlayCard);
-            
-            if (shouldPlayCard)
-            {
-                PlayerHandManager.Instance.PlayCard(draggedCard, Play());
-            }
-        }
+        public override CellPattern CellPattern => null;
         
         
-        private IEnumerator Play()
+        public override IEnumerator ApplyBoardEffects(Vector2Int cell)
         {
-            Debug.LogWarning("TODO: Implement card logic.");
             yield break;
         }
     }

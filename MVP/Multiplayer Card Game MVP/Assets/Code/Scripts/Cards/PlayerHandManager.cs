@@ -52,6 +52,7 @@ namespace Cards
         
         public CardData RemoveCardFromDrawPile()
         {
+#warning TODO: Implement draw pile
             return _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
         }
 
@@ -71,9 +72,11 @@ namespace Cards
         }
 
 
-        public void PlayCard(CardInstance cardInstance, IEnumerator playCoroutine)
+        public void PlayCard(CardInstance cardInstance, Vector2Int cell)
         {
             CardsPlayedThisTurn++;
+
+            IEnumerator playCoroutine = cardInstance.Data.ApplyBoardEffects(cell);
             
             StartCoroutine(playCoroutine);
             
@@ -83,8 +86,15 @@ namespace Cards
         
         public void DiscardCard(CardInstance cardInstance)
         {
-            _hand.Cards.Remove(cardInstance);
+            RemoveCardFromHand(cardInstance);
             Destroy(cardInstance.gameObject);
+#warning TODO: Move the card to the discard pile
+        }
+        
+        
+        public void RemoveCardFromHand(CardInstance cardInstance)
+        {
+            _hand.Cards.Remove(cardInstance);
         }
 
 
