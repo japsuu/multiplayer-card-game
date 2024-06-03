@@ -190,7 +190,7 @@ namespace Cards
                 }
             }
             
-            _isBeingDragged = false;
+            StopDragging();
         }
 
 
@@ -203,6 +203,13 @@ namespace Cards
         private void MoveTowardsCursor()
         {
             transform.position = (Vector2)Input.mousePosition;
+        }
+
+
+        private void StopDragging()
+        {
+            _belowReceiver?.OnHoverExit(this);
+            _isBeingDragged = false;
         }
 
 
@@ -268,7 +275,7 @@ namespace Cards
             
             if (Data.CanBePlayed)
                 TargetingArrow.Instance.Deactivate();
-            _isBeingDragged = false;
+            StopDragging();
 
             DestroyHighlighter();
         }
