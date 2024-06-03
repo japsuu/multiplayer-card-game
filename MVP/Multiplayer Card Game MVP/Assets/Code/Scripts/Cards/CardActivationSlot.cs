@@ -34,8 +34,8 @@ namespace Cards
 
         public void OnHoverEnter(CardInstance card)
         {
-            // Flash the discard warning triangle if there's a card already in the slot.
-            if (_currentCard == null)
+            // Flash the discard warning triangle only if there's a card already in the slot.
+            if (_currentCard == null || card.HasBeenActivated)
                 return;
             
             SetDiscardWarningVisibility(true);
