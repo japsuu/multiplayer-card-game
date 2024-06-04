@@ -15,7 +15,7 @@ namespace PhaseSystem.Players
             // Draw cards until the player reaches their draw limit.
             while (PlayerHandManager.Instance.CardCount < PlayerHandManager.Instance.DrawLimit)
             {
-                PlayerHandManager.Instance.AddCardToHand(PlayerHandManager.Instance.RemoveCardFromDrawPile());
+                PlayerHandManager.Instance.DrawCard();
                 yield return new WaitForSeconds(0.2f);
             }
         }

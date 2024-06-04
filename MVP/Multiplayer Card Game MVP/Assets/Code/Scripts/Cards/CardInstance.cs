@@ -32,7 +32,6 @@ namespace Cards
         private Button _discardButton;
         
         private Vector3 _homePosition;
-        private bool _hasBeenPlayed;
         private bool _isBeingDragged;
         private ICardInstanceReceiver _belowReceiver;
         private readonly List<RaycastResult> _raycastResults = new();
@@ -47,6 +46,7 @@ namespace Cards
         /// When an activated card is dragged, a targeting arrow will be shown instead of dragging the card.
         /// </summary>
         public bool HasBeenActivated { get; private set; }
+        public bool HasBeenPlayed { get; private set; }
 
 
         public void Initialize(CardData data)
@@ -64,39 +64,9 @@ namespace Cards
         }
         
         
-        public void Activate()
-        {
-            if(_hasBeenPlayed)
-                throw new Exception("The card has already been played.");
-            
-            HasBeenActivated = true;
-            Destroy(_discardButton.gameObject);     // Just in case
-        }
-
-
-        public void FlagAsPlayed()
-        {
-            _hasBeenPlayed = true;
-            gameObject.AddComponent<CanvasGroup>().alpha = 0.2f;
-        }
-
-
-        /// <summary>
-        /// Called when the card is removed from a card activation slot.
-        /// This will cause the card to be placed in the discard pile.
-        /// </summary>
-        public void DeactivateAndDiscard()
-        {
-            if (!HasBeenActivated)
-                throw new Exception("Card is not activated.");
-            
-            Discard();
-        }
-        
-        
         public void SetAllowDiscard(bool allow)
         {
-            if(_hasBeenPlayed)
+            if(HasBeenPlayed)
                 throw new Exception("The card has already been played.");
 
             if (HasBeenActivated)
@@ -108,7 +78,7 @@ namespace Cards
         
         public void UpdateHomePosition(Vector3 homePosition)
         {
-            if(_hasBeenPlayed)
+            if(HasBeenPlayed)
                 throw new Exception("The card has already been played.");
 
             if (HasBeenActivated)
@@ -120,7 +90,7 @@ namespace Cards
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if(_hasBeenPlayed)
+            if(HasBeenPlayed)
                 return;
             
             if (HasBeenActivated)
@@ -212,6 +182,25 @@ namespace Cards
             
             StopDragging();
         }
+        
+        
+        public void DestroyDiscardButton()
+        {
+            Destroy(_discardButton.gameObject);
+        }
+        
+        
+        public void FlagAsActivated()
+        {
+            HasBeenActivated = true;
+        }
+
+
+        public void FlagAsPlayed()
+        {
+            HasBeenPlayed = true;
+            gameObject.AddComponent<CanvasGroup>().alpha = 0.2f;
+        }
 
 
         private void Discard()
@@ -235,7 +224,7 @@ namespace Cards
 
         private void Update()
         {
-            if(_hasBeenPlayed)
+            if(HasBeenPlayed)
                 return;
             
             if (_isBeingDragged)

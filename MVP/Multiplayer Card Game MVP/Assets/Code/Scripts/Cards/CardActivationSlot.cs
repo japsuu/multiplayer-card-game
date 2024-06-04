@@ -71,7 +71,7 @@ namespace Cards
         private void SetCard(CardInstance card)
         {
             if (_currentCard != null)
-                _currentCard.DeactivateAndDiscard();
+                PlayerHandManager.Instance.DiscardCard(card);
             
             _currentCard = card;
             _currentCard.transform.SetParent(_cardRoot, false);

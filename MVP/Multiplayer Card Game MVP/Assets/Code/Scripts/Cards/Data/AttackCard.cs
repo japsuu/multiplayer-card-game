@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 namespace Cards.Data
 {
     [CreateAssetMenu(menuName = "Cards/Create Attack Card", fileName = "Card_Attack_", order = 0)]
-    public class AttackCardData : CardData
+    public class AttackCard : CardData
     {
         [SerializeField]
         private int _damage = 10;
@@ -19,7 +19,7 @@ namespace Cards.Data
         public override CellPattern CellPattern => _cellPattern;
 
 
-        public override IEnumerator ApplyBoardEffects(Vector2Int cell)
+        public override IEnumerator OnPlayed(Vector2Int cell)
         {
             foreach (Vector2Int damagedPos in CellPattern.GetCells(cell))
             {

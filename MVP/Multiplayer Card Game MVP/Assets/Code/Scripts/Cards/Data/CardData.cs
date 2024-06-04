@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using Cards.AttackPatterns;
+using Cards.Tags;
+using Entities.Enemies;
 using UnityEngine;
 
 namespace Cards.Data
@@ -20,6 +22,9 @@ namespace Cards.Data
 
         [SerializeField]
         private Sprite _sprite;
+
+        [Header("Tags")]
+        private CardTag[] _tags;
         
         public abstract CellPattern CellPattern { get; }
         
@@ -34,8 +39,77 @@ namespace Cards.Data
         /// </summary>
         public bool CanBePlayed => CellPattern != null;
         
+        
+        public virtual IEnumerator OnTurnStart()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnTurnStart();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnTurnEnd()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnTurnEnd();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnDrawn()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnDrawn();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnDiscarded()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnDiscarded();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnActivated()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnActivated();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnDeactivated()
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnDeactivated();
+            }
+        }
+        
 
 #warning Change "cell" to an IBoardRegion
-        public abstract IEnumerator ApplyBoardEffects(Vector2Int cell);
+        public virtual IEnumerator OnPlayed(Vector2Int cell)
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnPlayed();
+            }
+        }
+        
+        
+        public virtual IEnumerator OnEnemyAttacked(EnemyCharacter enemy)
+        {
+            foreach (CardTag tag in _tags)
+            {
+                yield return tag.OnEnemyAttacked(enemy);
+            }
+        }
     }
 }
