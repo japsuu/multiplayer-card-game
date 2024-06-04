@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Cards Discard
   m_EditorClassIdentifier: 
   _name: discard cards
-  _displayBanner: 0
+  _displayBanner: 1
   _displaySkipButton: 1

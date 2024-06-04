@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12f03284577443ea97c2c59ca631d343, type: 3}
   m_Name: Move Or Play Cards
   m_EditorClassIdentifier: 
-  _name: move or play cards
-  _displayBanner: 0
+  _name: play cards
+  _displayBanner: 1
   _displaySkipButton: 0

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Move Or Activate Cards
   m_EditorClassIdentifier: 
   _name: move or activate cards
-  _displayBanner: 0
+  _displayBanner: 1
   _displaySkipButton: 1
