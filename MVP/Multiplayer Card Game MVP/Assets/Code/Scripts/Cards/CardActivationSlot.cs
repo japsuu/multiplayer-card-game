@@ -37,7 +37,10 @@ namespace Cards
             if (card == null)
                 throw new ArgumentNullException(nameof(card));
             
-            SetCard(card);
+            if (_currentCard != null)
+                RemoveOldCard();
+
+            AssignNewCard(card);
         }
 
 
@@ -90,15 +93,17 @@ namespace Cards
         }
 
 
-        private void SetCard(CardInstance card)
+        private void RemoveOldCard()
         {
-            if (_currentCard != null)
-            {
-                ActivatedCards.Remove(_currentCard);
-                PlayerHandManager.Instance.DiscardCard(card);
-            }
-            
+            ActivatedCards.Remove(_currentCard);
+            PlayerHandManager.Instance.DiscardCard(_currentCard);
+        }
+
+
+        private void AssignNewCard(CardInstance card)
+        {
             _currentCard = card;
+            
             _currentCard.transform.SetParent(_cardRoot, false);
             _currentCard.transform.localPosition = Vector3.zero;
             

@@ -69,6 +69,8 @@ namespace Cards
         {
             Data = data;
             
+            gameObject.name = data.CardName;
+            
             _nameText.text = data.CardName;
             // _manaCostText.text = data.ManaCost.ToString();
             _descriptionText.text = data.Description;
