@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Cards.AttackPatterns;
 using Cards.Tags;
 using Entities;
-using Entities.Enemies;
 using UnityEngine;
 
 namespace Cards.Data

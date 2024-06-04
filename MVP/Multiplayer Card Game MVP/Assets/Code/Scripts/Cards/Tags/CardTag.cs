@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Entities;
-using Entities.Enemies;
 using UnityEngine;
 
 namespace Cards.Tags
