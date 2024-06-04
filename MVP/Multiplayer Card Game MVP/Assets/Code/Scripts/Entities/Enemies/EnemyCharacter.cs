@@ -38,6 +38,8 @@ namespace Entities.Enemies
             base.Awake();
             Movement = GetComponent<EnemyMovement>();
             Movement.Initialize(this);
+
+            _attack.Initialize(this);
         }
 
 

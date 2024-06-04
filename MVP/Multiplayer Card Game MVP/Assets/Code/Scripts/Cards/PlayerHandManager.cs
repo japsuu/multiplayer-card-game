@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cards.Data;
+using Entities;
 using Singletons;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -188,6 +189,16 @@ namespace Cards
 #warning TODO: Move state-related stuff to the state machine
             foreach (CardInstance card in _hand.Cards)
                 card.SetAllowDiscard(allow);
+        }
+        
+        
+        public void InvokeOnAttacked(BoardEntity damagingEntity, int damageAmount)
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnAttacked(damagingEntity, damageAmount);
+                StartCoroutine(coroutine);
+            }
         }
         
         

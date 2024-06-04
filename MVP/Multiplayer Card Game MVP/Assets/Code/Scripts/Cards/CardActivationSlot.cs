@@ -1,4 +1,6 @@
-﻿using DG.Tweening;
+﻿using System;
+using System.Collections.Generic;
+using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
@@ -12,6 +14,9 @@ namespace Cards
     /// </summary>
     public class CardActivationSlot : MonoBehaviour, ICardInstanceReceiver
     {
+        private static int registeredActivationSlots;
+        private static readonly List<CardInstance> ActivatedCards = new();
+        
         [SerializeField]
         private RectTransform _cardRoot;
 
@@ -20,6 +25,8 @@ namespace Cards
         
         private CardInstance _currentCard;
         private TweenerCore<Color, Color, ColorOptions> _warningTween;
+        
+        public static IEnumerable<CardInstance> ActivatedCardInstances => ActivatedCards;
 
 
         public bool CanReceiveCard(CardInstance card) => true;
@@ -27,6 +34,9 @@ namespace Cards
 
         public void ReceiveCard(CardInstance card)
         {
+            if (card == null)
+                throw new ArgumentNullException(nameof(card));
+            
             SetCard(card);
         }
 
@@ -58,6 +68,18 @@ namespace Cards
         }
 
 
+        private void OnEnable()
+        {
+            registeredActivationSlots++;
+        }
+
+
+        private void OnDisable()
+        {
+            registeredActivationSlots--;
+        }
+
+
         private void Awake()
         {
             // Create a DOTween tween to flash the triangle.
@@ -71,13 +93,20 @@ namespace Cards
         private void SetCard(CardInstance card)
         {
             if (_currentCard != null)
+            {
+                ActivatedCards.Remove(_currentCard);
                 PlayerHandManager.Instance.DiscardCard(card);
+            }
             
             _currentCard = card;
             _currentCard.transform.SetParent(_cardRoot, false);
             _currentCard.transform.localPosition = Vector3.zero;
             
+            ActivatedCards.Add(_currentCard);
             PlayerHandManager.Instance.ActivateCard(card);
+            
+            if (ActivatedCards.Count > registeredActivationSlots)
+                throw new Exception("There are more activated cards than activation slots.");
         }
 
 

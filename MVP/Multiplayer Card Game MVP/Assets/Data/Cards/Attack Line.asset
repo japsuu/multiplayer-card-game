@@ -15,6 +15,7 @@ MonoBehaviour:
   _cardName: Kick
   _description: Deal 15 damage
   _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
-  _tags: []
+  _tags:
+  - {fileID: 11400000, guid: 004ee8127effd804cb302ebc4d564d03, type: 2}
   _damage: 15
   _cellPattern: {fileID: 11400000, guid: b248134a4ffea544ca1a7579904aa7a9, type: 2}

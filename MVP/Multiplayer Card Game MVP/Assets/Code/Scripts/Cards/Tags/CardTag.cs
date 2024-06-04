@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Entities;
 using Entities.Enemies;
 using UnityEngine;
 
@@ -65,7 +66,7 @@ namespace Cards.Tags
         }
         
         
-        public virtual IEnumerator OnEnemyAttacked(EnemyCharacter enemy)
+        public virtual IEnumerator OnAttacked(BoardEntity damagingEntity, int damageAmount)
         {
             yield break;
         }

@@ -62,7 +62,7 @@ namespace Entities
         }
 
 
-        private void OnHealthChanged(HealthChangedArgs args)
+        protected virtual void OnHealthChanged(HealthChangedArgs args)
         {
             if (args.IsDamage)
                 _damageNumberPrefab.Spawn(transform.position, args.HealthDifference.ToString());

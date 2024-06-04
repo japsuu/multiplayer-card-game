@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cards.AttackPatterns;
 using Cards.Tags;
+using Entities;
 using Entities.Enemies;
 using UnityEngine;
 
@@ -108,11 +109,12 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnEnemyAttacked(EnemyCharacter enemy)
+#warning TODO: Call CardData.OnAttacked(Entity)
+        public virtual IEnumerator OnAttacked(BoardEntity damagingEntity, int damageAmount)
         {
             foreach (CardTag tag in _tags)
             {
-                yield return tag.OnEnemyAttacked(enemy);
+                yield return tag.OnAttacked(damagingEntity, damageAmount);
             }
         }
     }

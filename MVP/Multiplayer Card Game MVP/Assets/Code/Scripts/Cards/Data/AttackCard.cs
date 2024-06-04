@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Boards;
 using Cards.AttackPatterns;
+using Entities.Players;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -21,14 +22,15 @@ namespace Cards.Data
 
         public override IEnumerator OnPlayed(Vector2Int cell)
         {
+            yield return base.OnPlayed(cell);
+            
             foreach (Vector2Int damagedPos in CellPattern.GetCells(cell))
             {
                 if (BoardManager.Instance.TryGetCell(damagedPos, out BoardCell damagedCell))
                 {
-                    damagedCell.Occupant?.Damageable?.TakeDamage(_damage);
+                    damagedCell.Occupant?.Damageable?.TakeDamage(_damage, PlayerCharacter.LocalPlayer);
                 }
             }
-            yield break;
         }
     }
 }
