@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Enemies' phase
   _displayBanner: 1
+  _displaySkipButton: 0

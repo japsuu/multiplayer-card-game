@@ -1,4 +1,5 @@
 ﻿using System;
+using Cards;
 using DamageSystem;
 using PhaseSystem;
 using UnityEngine;
@@ -23,6 +24,17 @@ namespace Entities.Players
         {
             LocalPlayer = player;
             LocalPlayerCreated?.Invoke(player);
+        }
+
+
+        protected override void OnHealthChanged(HealthChangedArgs args)
+        {
+            base.OnHealthChanged(args);
+
+            if (args.IsDamage)
+            {
+                PlayerHandManager.Instance.InvokeOnAttacked(Health.LastDamagingEntity, args.HealthDifference);
+            }
         }
 
 

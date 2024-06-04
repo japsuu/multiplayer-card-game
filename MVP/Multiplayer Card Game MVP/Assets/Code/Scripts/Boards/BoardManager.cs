@@ -125,6 +125,9 @@ namespace Boards
 
         public IEnumerable<BoardCell> GetEmptyCells(Vector2Int position, int range, CellSide side, bool includeOrigin = false)
         {
+            if (range == 0)
+                yield break;
+            
             for (int y = position.y - range; y <= position.y + range; y++)
             for (int x = position.x - range; x <= position.x + range; x++)
             {

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Execute Actions
   _displayBanner: 0
+  _displaySkipButton: 0
   _subPhases:
   - {fileID: 11400000, guid: 9660df1c215eb6d418d9eb1b89cd75cf, type: 2}
   - {fileID: 11400000, guid: 65f2214f1ee778f409042b6ef10e42a1, type: 2}

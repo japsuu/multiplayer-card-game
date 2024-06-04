@@ -11,5 +11,7 @@ namespace Cards
         /// All currently instantiated cards in the player's hand.
         /// </summary>
         public readonly List<CardInstance> Cards = new();
+        
+        public int CardCount => Cards.Count;
     }
 }

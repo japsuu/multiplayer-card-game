@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace Utils
 {
+    /// <summary>
+    /// Custom yield instruction that waits for a button to be pressed.
+    /// </summary>
     public class WaitForUIButtons : CustomYieldInstruction, IDisposable
     {
         private struct ButtonCallback

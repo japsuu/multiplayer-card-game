@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Utils
 {
+    /// <summary>
+    /// Custom yield instruction that waits for an event to be triggered.
+    /// </summary>
     public class WaitForEvent : CustomYieldInstruction, IDisposable
     {
         private bool _isEventTriggered;

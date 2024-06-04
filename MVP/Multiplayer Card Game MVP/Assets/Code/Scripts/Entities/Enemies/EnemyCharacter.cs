@@ -24,7 +24,6 @@ namespace Entities.Enemies
             
             foreach (Vector2Int cell in _attack.GetAffectedCellPositions(BoardPosition))
                 _highlighterGroup.AddHighlighter(cell, Color.yellow);
-            print("EnemyCharacter.UpdateAttackHighlighter");
         }
         
         
@@ -39,6 +38,8 @@ namespace Entities.Enemies
             base.Awake();
             Movement = GetComponent<EnemyMovement>();
             Movement.Initialize(this);
+
+            _attack.Initialize(this);
         }
 
 

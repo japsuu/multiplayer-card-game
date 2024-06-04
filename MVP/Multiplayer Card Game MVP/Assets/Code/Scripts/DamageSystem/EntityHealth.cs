@@ -1,4 +1,5 @@
 ﻿using System;
+using Entities;
 using NaughtyAttributes;
 using UnityEngine;
 
@@ -19,11 +20,12 @@ namespace DamageSystem
         [SerializeField]
         [ReadOnly]
         private bool _isDead;
-
-        public int CurrentHealth => _currentHealth;
+        
+        public BoardEntity LastDamagingEntity { get; private set; }
         
         public bool IsDead => _isDead;
         public int MaxHealth => _maxHealth;
+        public int CurrentHealth => _currentHealth;
         
         
         private void Awake()
@@ -32,8 +34,10 @@ namespace DamageSystem
         }
         
         
-        public void TakeDamage(int damage)
+        public void TakeDamage(int damage, BoardEntity damagingEntity)
         {
+            LastDamagingEntity = damagingEntity;
+            
             int previousHealth = CurrentHealth;
             _currentHealth -= damage;
             

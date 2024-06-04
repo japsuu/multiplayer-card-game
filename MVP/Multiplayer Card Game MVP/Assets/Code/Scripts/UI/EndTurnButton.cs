@@ -1,77 +1,23 @@
-﻿using DG.Tweening;
+﻿using System;
 using PhaseSystem;
-using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace UI
 {
-    [RequireComponent(typeof(RectTransform))]
-    public class EndTurnButton : MonoBehaviour
+    public class EndTurnButton : ToggleableEventButton
     {
-        [SerializeField]
-        private Button _button;
-
-        private RectTransform _rectTransform;
-        private Vector2 _originalPosition;
+        protected override UnityAction ClickAction => GameLoopManager.RequestEndTurn;
 
 
-        private void Awake()
+        protected override void SubscribeToEvents(Action<bool> setVisibility)
         {
-            _rectTransform = GetComponent<RectTransform>();
-            _originalPosition = _rectTransform.anchoredPosition;
-            HideSelf();
+            GameLoopManager.RequestShowEndTurnButton += setVisibility;
         }
 
 
-        private void OnEnable()
+        protected override void UnsubscribeFromEvents(Action<bool> setVisibility)
         {
-            _button.onClick.AddListener(OnButtonClicked);
-            GameLoopManager.PlayerTurnStart += OnPlayerTurnStart;
-            GameLoopManager.PlayerTurnEnd += OnPlayerTurnEnd;
-        }
-
-
-        private void OnDisable()
-        {
-            _button.onClick.RemoveListener(OnButtonClicked);
-            GameLoopManager.PlayerTurnStart -= OnPlayerTurnStart;
-            GameLoopManager.PlayerTurnEnd -= OnPlayerTurnEnd;
-        }
-
-
-        private static void OnButtonClicked()
-        {
-            GameLoopManager.RequestEndTurn();
-        }
-
-
-        private void OnPlayerTurnEnd()
-        {
-            HideSelf();
-        }
-
-
-        private void OnPlayerTurnStart()
-        {
-            ShowSelf();
-        }
-        
-        
-        private void ShowSelf()
-        {
-            _rectTransform.anchoredPosition = new Vector2(-_originalPosition.x, _originalPosition.y);
-            
-            // Tween to original position
-            _rectTransform.DOAnchorPosX(_originalPosition.x, 0.5f);
-        }
-        
-        
-        private void HideSelf()
-        {
-            _rectTransform.anchoredPosition = _originalPosition;
-            
-            // Tween to hidden position
-            _rectTransform.DOAnchorPosX(-_originalPosition.x, 0.5f);
+            GameLoopManager.RequestShowEndTurnButton -= setVisibility;
         }
     }
 }

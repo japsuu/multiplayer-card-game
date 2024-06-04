@@ -12,16 +12,32 @@ namespace PhaseSystem
     /// </summary>
     public class GameLoopManager : SingletonBehaviour<GameLoopManager>
     {
-        public static bool EndTurnRequested;
+        private static bool isSkipPhaseRequested;
+        public static bool IsSkipPhaseRequested() => isSkipPhaseRequested;
+        
+        private static bool isEndTurnRequested;
+        public static bool IsEndTurnRequested() => isEndTurnRequested;
+
+        public static bool AllowCardPlay;
+        public static bool AllowCardActivation;
         
         public static event Action PlayerTurnStart;
         public static event Action PlayerTurnEnd;
+        
+        public static event Action<bool> RequestShowSkipButton;
+        public static event Action<bool> RequestShowEndTurnButton;
+        
+        public static event Action<GamePhase> PhaseChange;
         
         [SerializeField]
         private List<GamePhase> _phases;
 
         private int _currentPhase;
         private bool _shouldExecutePhases;
+
+
+        public static void SetShowSkipButton(bool show) => RequestShowSkipButton?.Invoke(show);
+        public static void SetShowEndTurnButton(bool show) => RequestShowEndTurnButton?.Invoke(show);
 
 
         /// <summary>
@@ -48,22 +64,36 @@ namespace PhaseSystem
         
         public static void StartPlayerTurn()
         {
-            EndTurnRequested = false;
+            isEndTurnRequested = false;
+            isSkipPhaseRequested = false;
             PlayerTurnStart?.Invoke();
         }
         
         
         public static void EndPlayerTurn()
         {
-            EndTurnRequested = false;
+            isEndTurnRequested = false;
+            isSkipPhaseRequested = false;
             PlayerTurnEnd?.Invoke();
+        }
+        
+        
+        public static void RequestSkipPhase()
+        {
+            isSkipPhaseRequested = true;
         }
         
         
         public static void RequestEndTurn()
         {
-            EndTurnRequested = true;
-            // print("End turn requested.");
+            isEndTurnRequested = true;
+        }
+        
+        
+        public static void NotifyPhaseChange(GamePhase phase)
+        {
+            isSkipPhaseRequested = false;
+            PhaseChange?.Invoke(phase);
         }
         
         

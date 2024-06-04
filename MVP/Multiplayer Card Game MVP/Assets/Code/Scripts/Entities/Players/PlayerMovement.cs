@@ -12,11 +12,12 @@ namespace Entities.Players
         [Range(1, 5)]
         private int _movementRange = 2;
         
-        [SerializeField]
+        /*[SerializeField]
         [Range(1, 5)]
-        private int _movementActions = 1;
+        private int _movementActions = 1;*/
         
         private bool _allowMovement = true;
+        private int _movementRangeModifier;
         
         private readonly List<Vector2Int> _availableMovementCells = new();
         
@@ -42,6 +43,13 @@ namespace Entities.Players
             PlayerMovementsThisTurn = 0;
             _allowMovement = false;
             StopHighlightCells();
+        }
+        
+        
+        public void ChangeMovementRangeModifier(int modifier)
+        {
+            _movementRangeModifier += modifier;
+            print($"Player movement range modifier changed to: {_movementRangeModifier}");
         }
 
         
@@ -86,6 +94,12 @@ namespace Entities.Players
             // Stop highlighting the cells.
             StopHighlightCells();
         }
+        
+        
+        private int GetMovementRange()
+        {
+            return _movementRange + _movementRangeModifier;
+        }
 
 
         private void MovePlayer(Vector2Int cellPos)
@@ -99,8 +113,8 @@ namespace Entities.Players
         {
             yield return BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
             
-            if (PlayerMovementsThisTurn < _movementActions)
-                StartHighlightCells(cellPos);
+            /*if (PlayerMovementsThisTurn < _movementActions)
+                StartHighlightCells(cellPos);*/
         }
 
 
@@ -108,7 +122,7 @@ namespace Entities.Players
         {
             StopHighlightCells();
 
-            foreach (BoardCell cell in BoardManager.Instance.GetEmptyCells(playerPos, _movementRange, CellSide.Player))
+            foreach (BoardCell cell in BoardManager.Instance.GetEmptyCells(playerPos, GetMovementRange(), CellSide.Player))
             {
                 _availableMovementCells.Add(cell.Position);
                 BoardManager.Instance.HighlightCell(cell.Position, false);

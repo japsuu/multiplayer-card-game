@@ -10,6 +10,9 @@ namespace Entities.Enemies
     {
         [SerializeField]
         private int _damage = 20;
+        
+        [NonSerialized]
+        private EnemyCharacter _host;
 
         
         public IEnumerable<Vector2Int> GetAffectedCellPositions(Vector2Int origin)
@@ -31,9 +34,15 @@ namespace Entities.Enemies
             {
                 if (BoardManager.Instance.TryGetCell(damagePos, out BoardCell damagedCell))
                 {
-                    damagedCell.Occupant?.Damageable?.TakeDamage(_damage);
+                    damagedCell.Occupant?.Damageable?.TakeDamage(_damage, _host);
                 }
             }
+        }
+
+
+        public void Initialize(EnemyCharacter host)
+        {
+            _host = host;
         }
     }
 }

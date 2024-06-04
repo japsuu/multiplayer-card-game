@@ -1,14 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cards.Data;
+using Entities;
+using PhaseSystem;
 using Singletons;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Cards
 {
     public class PlayerHandManager : SingletonBehaviour<PlayerHandManager>
     {
         [Header("General")]
+        
+        [SerializeField]
+        private int _drawLimit = 5;
         
         [SerializeField]
         private Transform _cardRoot;
@@ -43,40 +50,190 @@ namespace Cards
         private Vector3 _cardsPanelOriginalPos;
         
         public int CardsPlayedThisTurn { get; private set; }
+        public int CardsActivatedThisTurn { get; private set; }
+        public int CardCount => _hand.Cards.Count;
+        public int DrawLimit => _drawLimit;
+        
+        
+        /// <summary>
+        /// Removes the top-most card from the draw pile and returns it.
+        /// </summary>
+        public CardData RemoveCardFromDrawPile()
+        {
+#warning TODO: Implement draw pile
+            return _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
+        }
 
 
-        public void AddCardToHand(CardData cardData)
+        /// <summary>
+        /// Draws a card from the draw pile and adds it to the player's hand.
+        /// </summary>
+        public void DrawCard()
+        {
+            CardData cardData = RemoveCardFromDrawPile();
+            DrawCard(cardData);
+        }
+
+
+        /// <summary>
+        /// Adds the specified card to the player's hand.
+        /// </summary>
+        public void DrawCard(CardData cardData)
         {
             CardInstance card = Instantiate(_cardPrefab, _cardRoot);
             card.Initialize(cardData);
             _hand.Cards.Add(card);
+            
+            IEnumerator coroutine = card.Data.OnDrawn(card);
+            StartCoroutine(coroutine);
         }
 
 
-        public void PlayCard(CardInstance cardInstance, IEnumerator playCoroutine)
+        /// <summary>
+        /// Plays the specified card at the specified cell.
+        /// </summary>
+        public void PlayCard(CardInstance card, Vector2Int cell)
         {
             CardsPlayedThisTurn++;
+
+            IEnumerator coroutine = card.Data.OnPlayed(card, cell);
+            StartCoroutine(coroutine);
             
-            StartCoroutine(playCoroutine);
+            DeactivateCard(card);
+
+            if (!Globals.DiscardPlayedCards)
+                return;
             
-            _hand.Cards.Remove(cardInstance);
-            Destroy(cardInstance.gameObject);
+            if (!card.HasBeenActivated)
+                throw new Exception("Card is not activated.");
+                
+            DiscardCard(card);
+        }
+
+
+        /// <summary>
+        /// Activates the specified card, removing it from the player's hand.
+        /// </summary>
+        public void ActivateCard(CardInstance card)
+        {
+            CardsActivatedThisTurn++;
+            
+            IEnumerator coroutine = card.Data.OnActivated(card);
+            StartCoroutine(coroutine);
+
+            if(card.HasBeenPlayed)
+                throw new Exception("The card has already been played.");
+            
+            card.FlagAsActivated();
+            card.DestroyDiscardButton();
+            
+            _hand.Cards.Remove(card);
+        }
+
+
+        /// <summary>
+        /// Deactivates the specified card, removing it from the card activation slot.
+        /// </summary>
+        public void DeactivateCard(CardInstance card)
+        {
+            card.FlagAsPlayed();
+            
+            IEnumerator coroutine = card.Data.OnDeactivated(card);
+            StartCoroutine(coroutine);
+        }
+        
+        
+        /// <summary>
+        /// Discards the specified card, removing it from the player's hand.
+        /// If the card has been activated, it will be deactivated first.
+        /// </summary>
+        public void DiscardCard(CardInstance card)
+        {
+            if (card.HasBeenActivated)
+                DeactivateCard(card);
+            
+            IEnumerator coroutine = card.Data.OnDiscarded(card);
+            StartCoroutine(coroutine);
+            
+            _hand.Cards.Remove(card);
+            Destroy(card.gameObject);
+#warning TODO: Move the card to the discard pile
+            /*cardInstance.transform.SetParent(CanvasManager.Instance.OverlayCanvasRoot, true);
+            cardInstance.transform.localScale = Vector3.one;
+            
+            // Tween the card location to the bottom-right corner of the screen, then destroy it
+            cardInstance.gameObject.transform.DOMove(new Vector3(Screen.width, 0, 0), 2f).OnComplete(() =>
+            {
+                Destroy(cardInstance.gameObject);
+            });*/
         }
 
 
         public void ShowHand()
         {
             CardsPlayedThisTurn = 0;
+            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
-#warning TODO: Show tabled cards
         }
 
 
         public void HideHand()
         {
             CardsPlayedThisTurn = 0;
+            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
-#warning TODO: Hide tabled cards
+        }
+        
+        
+        public void AllowDiscardCards(bool allow)
+        {
+#warning TODO: Move state-related stuff to the state machine
+            foreach (CardInstance card in _hand.Cards)
+                card.SetAllowDiscard(allow);
+        }
+        
+        
+        public void InvokeOnAttacked(BoardEntity damagingEntity, int damageAmount)
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnAttacked(card, damagingEntity, damageAmount);
+                StartCoroutine(coroutine);
+            }
+        }
+
+
+        private void InvokeOnTurnStart()
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnTurnStart(card);
+                StartCoroutine(coroutine);
+            }
+        }
+
+
+        private void InvokeOnTurnEnd()
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnTurnEnd(card);
+                StartCoroutine(coroutine);
+            }
+        }
+
+
+        private void OnEnable()
+        {
+            GameLoopManager.PlayerTurnStart += InvokeOnTurnStart;
+            GameLoopManager.PlayerTurnEnd += InvokeOnTurnEnd;
+        }
+        
+        
+        private void OnDisable()
+        {
+            GameLoopManager.PlayerTurnStart -= InvokeOnTurnStart;
+            GameLoopManager.PlayerTurnEnd -= InvokeOnTurnEnd;
         }
         
         
@@ -85,7 +242,7 @@ namespace Cards
             _cardsPanelOriginalPos = _cardsPanel.position;
             
             foreach (CardData cardData in _startingCards)
-                AddCardToHand(cardData);
+                DrawCard(cardData);
             
             HideHand();
         }
@@ -93,37 +250,34 @@ namespace Cards
 
         private void Update()
         {
-            if (_cardPosTargets.Count != _hand.Cards.Count)
-                UpdateCardPosTargets();
-            
-            for (int i = 0; i < _hand.Cards.Count; i++)
-            {
-                CardInstance card = _hand.Cards[i];
-                card.UpdateHomePosition(GetCardPosition(i));
-            }
-            
+            UpdateCardPositionTargets();
+
             SpawnRandomDebugCard();
         }
 
 
-        private void SpawnRandomDebugCard()
+        #region Card Positioning
+
+        private void UpdateCardPositionTargets()
         {
-            if (!Input.GetKeyDown(KeyCode.P))
-                return;
-            
-            CardData randomCard = _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
-            AddCardToHand(randomCard);
-            Debug.Log($"Added random card '{randomCard.CardName}' to hand.");
+            if (_cardPosTargets.Count != _hand.Cards.Count)
+                ReInstantiateCardPosTargets();
+
+            for (int i = 0; i < _hand.Cards.Count; i++)
+            {
+                CardInstance card = _hand.Cards[i];
+                card.UpdateHomePosition(GetCardTargetPosition(i));
+            }
         }
 
 
-        private Vector3 GetCardPosition(int i)
+        private Vector3 GetCardTargetPosition(int i)
         {
             return _cardPosTargets[i].position;
         }
 
 
-        private void UpdateCardPosTargets()
+        private void ReInstantiateCardPosTargets()
         {
             foreach (Transform target in _cardPosTargets)
                 Destroy(target.gameObject);
@@ -135,5 +289,20 @@ namespace Cards
                 _cardPosTargets.Add(target);
             }
         }
+
+        #endregion
+
+
+#if DEBUG
+        private void SpawnRandomDebugCard()
+        {
+            if (!Input.GetKeyDown(KeyCode.P))
+                return;
+            
+            CardData randomCard = _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];
+            DrawCard(randomCard);
+            Debug.Log($"Added random card '{randomCard.CardName}' to hand.");
+        }
+#endif
     }
 }
