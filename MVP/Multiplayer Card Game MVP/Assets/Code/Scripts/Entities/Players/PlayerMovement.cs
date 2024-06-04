@@ -12,9 +12,9 @@ namespace Entities.Players
         [Range(1, 5)]
         private int _movementRange = 2;
         
-        [SerializeField]
+        /*[SerializeField]
         [Range(1, 5)]
-        private int _movementActions = 1;
+        private int _movementActions = 1;*/
         
         private bool _allowMovement = true;
         
@@ -99,8 +99,8 @@ namespace Entities.Players
         {
             yield return BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
             
-            if (PlayerMovementsThisTurn < _movementActions)
-                StartHighlightCells(cellPos);
+            /*if (PlayerMovementsThisTurn < _movementActions)
+                StartHighlightCells(cellPos);*/
         }
 
 
