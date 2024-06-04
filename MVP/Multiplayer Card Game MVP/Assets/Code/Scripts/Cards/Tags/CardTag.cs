@@ -70,22 +70,4 @@ namespace Cards.Tags
             yield break;
         }
     }
-    
-    public class NimbleTag : CardTag
-    {
-        [SerializeField]
-        [Range(1, 3)]
-        private int _movementRangeIncrease = 1;
-        
-        public override string Name => "Nimble";
-        protected override string TriggerDescription => "While activated";
-        protected override string ActionDescription => "Increase movement range by {_movementRangeIncrease}";
-        
-        
-        public override IEnumerator OnPlayed()
-        {
-            // Draw a card
-            yield break;
-        }
-    }
 }

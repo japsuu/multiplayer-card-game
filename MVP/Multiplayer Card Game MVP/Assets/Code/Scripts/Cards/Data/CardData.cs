@@ -24,6 +24,8 @@ namespace Cards.Data
         private Sprite _sprite;
 
         [Header("Tags")]
+        
+        [SerializeField]
         private CardTag[] _tags;
         
         public abstract CellPattern CellPattern { get; }
