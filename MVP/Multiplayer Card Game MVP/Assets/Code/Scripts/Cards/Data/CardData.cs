@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Cards.AttackPatterns;
 using Cards.Tags;
 using Entities.Enemies;
@@ -33,6 +34,7 @@ namespace Cards.Data
         public string CardName => _cardName;
         public string Description => _description;
         public Sprite Sprite => _sprite;
+        public IEnumerable<CardTag> Tags => _tags;
         
         /// <summary>
         /// Whether the card can be played or not (if it affects any cells when played).

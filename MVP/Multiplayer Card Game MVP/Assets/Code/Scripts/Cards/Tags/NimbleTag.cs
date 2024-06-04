@@ -13,7 +13,7 @@ namespace Cards.Tags
         
         public override string Name => $"Nimble ({_movementRangeIncrease})";
         protected override string TriggerDescription => "While activated";
-        protected override string ActionDescription => "Increase movement range by {_movementRangeIncrease}";
+        protected override string ActionDescription => $"Increase movement range by {_movementRangeIncrease}";
         
         
         public override IEnumerator OnActivated()

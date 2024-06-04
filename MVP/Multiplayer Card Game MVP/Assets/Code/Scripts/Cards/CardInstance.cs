@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Boards;
 using Cards.Data;
+using Cards.Tags;
 using PhaseSystem;
 using TMPro;
+using UI.Cards;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,6 +18,8 @@ namespace Cards
     /// </summary>
     public class CardInstance : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        [Header("UI References")]
+
         [SerializeField]
         private TMP_Text _nameText;
         
@@ -28,8 +32,20 @@ namespace Cards
         [SerializeField]
         private Image _artImage;
 
+        
+        [Header("Discarding")]
+
         [SerializeField]
         private Button _discardButton;
+        
+        
+        [Header("Tags")]
+
+        [SerializeField]
+        private RectTransform _tagsRoot;
+
+        [SerializeField]
+        private CardTagUIElement _tagElementPrefab;
         
         private Vector3 _homePosition;
         private bool _isBeingDragged;
@@ -58,12 +74,18 @@ namespace Cards
             _descriptionText.text = data.Description;
             _artImage.sprite = data.Sprite;
             
+            // Clear the tags root of any existing tags.
+            foreach (Transform child in _tagsRoot)
+                Destroy(child.gameObject);
+
+            WriteTags(data.Tags);
+            
             _discardButton.onClick.AddListener(Discard);
             
             SetAllowDiscard(false);
         }
-        
-        
+
+
         public void SetAllowDiscard(bool allow)
         {
             if(HasBeenPlayed)
@@ -306,6 +328,16 @@ namespace Cards
         private void MoveTowardsHome()
         {
             transform.position = Vector3.Lerp(transform.position, _homePosition, Time.deltaTime * 10f);
+        }
+
+
+        private void WriteTags(IEnumerable<CardTag> tags)
+        {
+            foreach (CardTag cardTag in tags)
+            {
+                CardTagUIElement tagElement = Instantiate(_tagElementPrefab, _tagsRoot);
+                tagElement.Initialize(cardTag);
+            }
         }
     }
 }
