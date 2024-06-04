@@ -108,7 +108,6 @@ namespace Cards.Data
         }
         
         
-#warning TODO: Call CardData.OnAttacked(Entity)
         public virtual IEnumerator OnAttacked(BoardEntity damagingEntity, int damageAmount)
         {
             foreach (CardTag tag in _tags)

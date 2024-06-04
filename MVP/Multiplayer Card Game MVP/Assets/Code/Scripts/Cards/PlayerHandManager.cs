@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cards.Data;
 using Entities;
+using PhaseSystem;
 using Singletons;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -199,6 +200,40 @@ namespace Cards
                 IEnumerator coroutine = card.Data.OnAttacked(damagingEntity, damageAmount);
                 StartCoroutine(coroutine);
             }
+        }
+
+
+        private void InvokeOnTurnStart()
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnTurnStart();
+                StartCoroutine(coroutine);
+            }
+        }
+
+
+        private void InvokeOnTurnEnd()
+        {
+            foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
+            {
+                IEnumerator coroutine = card.Data.OnTurnEnd();
+                StartCoroutine(coroutine);
+            }
+        }
+
+
+        private void OnEnable()
+        {
+            GameLoopManager.PlayerTurnStart += InvokeOnTurnStart;
+            GameLoopManager.PlayerTurnEnd += InvokeOnTurnEnd;
+        }
+        
+        
+        private void OnDisable()
+        {
+            GameLoopManager.PlayerTurnStart -= InvokeOnTurnStart;
+            GameLoopManager.PlayerTurnEnd -= InvokeOnTurnEnd;
         }
         
         
