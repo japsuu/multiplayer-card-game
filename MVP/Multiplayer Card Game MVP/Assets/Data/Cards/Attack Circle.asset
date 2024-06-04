@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ca3494df9aa457797eae193491ebb09, type: 3}
-  m_Name: Card_Skill_Test
+  m_Script: {fileID: 11500000, guid: 7a7562bbe95a4e7ea3adcdb299f1fd1f, type: 3}
+  m_Name: Attack Circle
   m_EditorClassIdentifier: 
-  _cardName: Skill
-  _description: Testing card. A skill card!
+  _cardName: Circle
+  _description: Testing card. Circle attack pattern
   _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
-  _manaCost: 2
+  _damage: 5
+  _cellPattern: {fileID: 11400000, guid: cd26335a0603dbd46b21ee155d3c9edb, type: 2}

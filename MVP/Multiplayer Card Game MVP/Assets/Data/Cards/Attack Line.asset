@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a7562bbe95a4e7ea3adcdb299f1fd1f, type: 3}
-  m_Name: Card_Attack_Test_LineV
+  m_Name: Attack Line
   m_EditorClassIdentifier: 
   _cardName: Line
   _description: Testing card. Vertical line attack pattern
