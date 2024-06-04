@@ -23,8 +23,10 @@ namespace Cards.Tags
         
         public override IEnumerator OnAttacked(BoardEntity damagingEntity, int damageAmount)
         {
+            if (damagingEntity == PlayerCharacter.LocalPlayer)
+                yield break;
+            
             damagingEntity.Health.TakeDamage(_retaliatedDamage, PlayerCharacter.LocalPlayer);
-            yield break;
         }
     }
 }
