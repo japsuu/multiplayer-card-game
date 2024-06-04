@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ca3494df9aa457797eae193491ebb09, type: 3}
-  m_Name: Skill Nimble
+  m_Name: Run
   m_EditorClassIdentifier: 
-  _cardName: Skill
-  _description: Testing card. A skill card!
+  _cardName: Run
+  _description: 
   _sprite: {fileID: 21300000, guid: 215d6cb2c5cf10b4cb830b933b9e5dc1, type: 3}
   _tags:
   - {fileID: 11400000, guid: 2ccffe13d72672b4bb44dc46dd3ad052, type: 2}
