@@ -42,9 +42,15 @@ namespace Cards.Data
         /// As an example a card that only has passive effects while activated has this set to false.
         /// </summary>
         public bool CanBePlayed => CellPattern != null;
+
+
+        protected virtual IEnumerator ApplyCellEffects(Vector2Int cell)
+        {
+            yield break;
+        }
         
         
-        public virtual IEnumerator OnTurnStart(CardInstance card)
+        public IEnumerator OnTurnStart(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -56,7 +62,7 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnTurnEnd(CardInstance card)
+        public IEnumerator OnTurnEnd(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -68,7 +74,7 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDrawn(CardInstance card)
+        public IEnumerator OnDrawn(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -80,7 +86,7 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDiscarded(CardInstance card)
+        public IEnumerator OnDiscarded(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -92,7 +98,7 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnActivated(CardInstance card)
+        public IEnumerator OnActivated(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -104,7 +110,7 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDeactivated(CardInstance card)
+        public IEnumerator OnDeactivated(CardInstance card)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -116,8 +122,7 @@ namespace Cards.Data
         }
         
 
-#warning Change "cell" to an IBoardRegion
-        public virtual IEnumerator OnPlayed(CardInstance card, Vector2Int cell)
+        public IEnumerator OnPlayed(CardInstance card, Vector2Int cell)
         {
             if (card.HasBeenPlayed)
                 yield break;
@@ -126,10 +131,12 @@ namespace Cards.Data
             {
                 yield return tag.OnPlayed();
             }
+
+            yield return ApplyCellEffects(cell);
         }
         
         
-        public virtual IEnumerator OnAttacked(CardInstance card, BoardEntity damagingEntity, int damageAmount)
+        public IEnumerator OnAttacked(CardInstance card, BoardEntity damagingEntity, int damageAmount)
         {
             if (card.HasBeenPlayed)
                 yield break;

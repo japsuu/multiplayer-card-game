@@ -20,10 +20,8 @@ namespace Cards.Data
         public override CellPattern CellPattern => _cellPattern;
 
 
-        public override IEnumerator OnPlayed(CardInstance card, Vector2Int cell)
+        protected override IEnumerator ApplyCellEffects(Vector2Int cell)
         {
-            yield return base.OnPlayed(card, cell);
-            
             foreach (Vector2Int damagedPos in CellPattern.GetCells(cell))
             {
                 if (BoardManager.Instance.TryGetCell(damagedPos, out BoardCell damagedCell))
@@ -31,6 +29,7 @@ namespace Cards.Data
                     damagedCell.Occupant?.Damageable?.TakeDamage(_damage, PlayerCharacter.LocalPlayer);
                 }
             }
+            yield break;
         }
     }
 }
