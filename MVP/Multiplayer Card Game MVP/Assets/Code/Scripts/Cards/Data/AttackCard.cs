@@ -20,9 +20,9 @@ namespace Cards.Data
         public override CellPattern CellPattern => _cellPattern;
 
 
-        public override IEnumerator OnPlayed(Vector2Int cell)
+        public override IEnumerator OnPlayed(CardInstance card, Vector2Int cell)
         {
-            yield return base.OnPlayed(cell);
+            yield return base.OnPlayed(card, cell);
             
             foreach (Vector2Int damagedPos in CellPattern.GetCells(cell))
             {

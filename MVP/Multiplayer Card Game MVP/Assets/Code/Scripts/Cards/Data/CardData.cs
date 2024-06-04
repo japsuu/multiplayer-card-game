@@ -44,8 +44,11 @@ namespace Cards.Data
         public bool CanBePlayed => CellPattern != null;
         
         
-        public virtual IEnumerator OnTurnStart()
+        public virtual IEnumerator OnTurnStart(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnTurnStart();
@@ -53,8 +56,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnTurnEnd()
+        public virtual IEnumerator OnTurnEnd(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnTurnEnd();
@@ -62,8 +68,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDrawn()
+        public virtual IEnumerator OnDrawn(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnDrawn();
@@ -71,8 +80,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDiscarded()
+        public virtual IEnumerator OnDiscarded(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnDiscarded();
@@ -80,8 +92,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnActivated()
+        public virtual IEnumerator OnActivated(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnActivated();
@@ -89,8 +104,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnDeactivated()
+        public virtual IEnumerator OnDeactivated(CardInstance card)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnDeactivated();
@@ -99,8 +117,11 @@ namespace Cards.Data
         
 
 #warning Change "cell" to an IBoardRegion
-        public virtual IEnumerator OnPlayed(Vector2Int cell)
+        public virtual IEnumerator OnPlayed(CardInstance card, Vector2Int cell)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnPlayed();
@@ -108,8 +129,11 @@ namespace Cards.Data
         }
         
         
-        public virtual IEnumerator OnAttacked(BoardEntity damagingEntity, int damageAmount)
+        public virtual IEnumerator OnAttacked(CardInstance card, BoardEntity damagingEntity, int damageAmount)
         {
+            if (card.HasBeenPlayed)
+                yield break;
+            
             foreach (CardTag tag in _tags)
             {
                 yield return tag.OnAttacked(damagingEntity, damageAmount);

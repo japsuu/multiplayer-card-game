@@ -84,7 +84,7 @@ namespace Cards
             card.Initialize(cardData);
             _hand.Cards.Add(card);
             
-            IEnumerator coroutine = card.Data.OnDrawn();
+            IEnumerator coroutine = card.Data.OnDrawn(card);
             StartCoroutine(coroutine);
         }
 
@@ -96,7 +96,7 @@ namespace Cards
         {
             CardsPlayedThisTurn++;
 
-            IEnumerator coroutine = card.Data.OnPlayed(cell);
+            IEnumerator coroutine = card.Data.OnPlayed(card, cell);
             StartCoroutine(coroutine);
             
             DeactivateCard(card);
@@ -118,7 +118,7 @@ namespace Cards
         {
             CardsActivatedThisTurn++;
             
-            IEnumerator coroutine = card.Data.OnActivated();
+            IEnumerator coroutine = card.Data.OnActivated(card);
             StartCoroutine(coroutine);
 
             if(card.HasBeenPlayed)
@@ -138,7 +138,7 @@ namespace Cards
         {
             card.FlagAsPlayed();
             
-            IEnumerator coroutine = card.Data.OnDeactivated();
+            IEnumerator coroutine = card.Data.OnDeactivated(card);
             StartCoroutine(coroutine);
         }
         
@@ -152,7 +152,7 @@ namespace Cards
             if (card.HasBeenActivated)
                 DeactivateCard(card);
             
-            IEnumerator coroutine = card.Data.OnDiscarded();
+            IEnumerator coroutine = card.Data.OnDiscarded(card);
             StartCoroutine(coroutine);
             
             _hand.Cards.Remove(card);
@@ -197,7 +197,7 @@ namespace Cards
         {
             foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
             {
-                IEnumerator coroutine = card.Data.OnAttacked(damagingEntity, damageAmount);
+                IEnumerator coroutine = card.Data.OnAttacked(card, damagingEntity, damageAmount);
                 StartCoroutine(coroutine);
             }
         }
@@ -207,7 +207,7 @@ namespace Cards
         {
             foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
             {
-                IEnumerator coroutine = card.Data.OnTurnStart();
+                IEnumerator coroutine = card.Data.OnTurnStart(card);
                 StartCoroutine(coroutine);
             }
         }
@@ -217,7 +217,7 @@ namespace Cards
         {
             foreach (CardInstance card in CardActivationSlot.ActivatedCardInstances)
             {
-                IEnumerator coroutine = card.Data.OnTurnEnd();
+                IEnumerator coroutine = card.Data.OnTurnEnd(card);
                 StartCoroutine(coroutine);
             }
         }
