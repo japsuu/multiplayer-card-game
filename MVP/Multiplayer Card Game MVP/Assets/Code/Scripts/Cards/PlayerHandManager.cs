@@ -178,7 +178,6 @@ namespace Cards
         
         public void AllowDiscardCards(bool allow)
         {
-#warning TODO: Move state-related stuff to the state machine
             foreach (CardInstance card in _hand.Cards)
                 card.SetAllowDiscard(allow);
         }
@@ -226,16 +225,19 @@ namespace Cards
             GameManager.PlayerTurnStart -= InvokeOnTurnStart;
             GameManager.PlayerTurnEnd -= InvokeOnTurnEnd;
         }
-        
-        
-        private void Start()
+
+
+        private void Awake()
         {
             _cardsPanelOriginalPos = _cardsPanel.position;
-            
+            HideHand();
+        }
+
+
+        private void Start()
+        {
             foreach (CardData cardData in _startingCards)
                 DrawCard(cardData);
-            
-            HideHand();
         }
 
 
@@ -287,7 +289,7 @@ namespace Cards
 #if DEBUG
         private void SpawnRandomDebugCard()
         {
-            if (!Input.GetKeyDown(KeyCode.P))
+            if (!Input.GetKeyDown(KeyCode.X))
                 return;
             
             CardData randomCard = _spawnableRandomCards[Random.Range(0, _spawnableRandomCards.Count)];

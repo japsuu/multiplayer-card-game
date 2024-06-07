@@ -1,5 +1,6 @@
 ﻿using Cards;
 using Entities.Players;
+using UnityEngine;
 
 namespace StateManagement
 {
@@ -56,6 +57,7 @@ namespace StateManagement
                 PlayerHandManager.Instance.ShowHand();
             else
                 PlayerHandManager.Instance.HideHand();
+            Debug.Log($"Hand shown: {value}");
         }
         
         
@@ -72,6 +74,7 @@ namespace StateManagement
         public static void SetAllowCardDiscard(bool value)
         {
             AllowCardDiscard = value;
+            PlayerHandManager.Instance.AllowDiscardCards(value);
         }
         
         
