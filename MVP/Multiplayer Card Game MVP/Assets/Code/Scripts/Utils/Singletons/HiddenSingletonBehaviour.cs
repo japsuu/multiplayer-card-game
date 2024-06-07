@@ -1,23 +1,15 @@
 ﻿using UnityEngine;
 
-// ReSharper disable StaticMemberInGenericType
-// ReSharper disable FieldCanBeMadeReadOnly.Local
-
 namespace Utils.Singletons
 {
-    /// <summary>
-    /// Instance object, that can be used from anywhere by calling ClassNameHere.Instance.
-    /// Only one singleton of some type can exist at once.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour
+    public class HiddenSingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour
     {
         // Check to see if we're about to be destroyed.
         private static bool shuttingDown;
         private static object lockObj = new();
         private static T instance;
 
-        public static T Instance
+        protected static T Instance
         {
             get
             {

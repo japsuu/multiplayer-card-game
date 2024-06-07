@@ -1,23 +1,23 @@
 ﻿using System;
-using PhaseSystem;
+using StateManagement;
 using UnityEngine.Events;
 
 namespace UI
 {
     public class EndTurnButton : ToggleableEventButton
     {
-        protected override UnityAction ClickAction => GameLoopManager.RequestEndTurn;
+        protected override UnityAction ClickAction => GameManager.EndTurn;
 
 
         protected override void SubscribeToEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowEndTurnButton += setVisibility;
+            GameManager.RequestShowEndTurnButton += setVisibility;
         }
 
 
         protected override void UnsubscribeFromEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowEndTurnButton -= setVisibility;
+            GameManager.RequestShowEndTurnButton -= setVisibility;
         }
     }
 }

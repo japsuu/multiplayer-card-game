@@ -1,4 +1,4 @@
-﻿using PhaseSystem;
+﻿using StateManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -25,6 +25,8 @@ namespace UI
 
         private void Update()
         {
+            OnPhaseChange(GameManager.CurrentStateName);
+            
             if (!Input.GetKeyDown(KeyCode.F1))
                 return;
             
@@ -33,21 +35,9 @@ namespace UI
         }
 
 
-        private void OnEnable()
+        private void OnPhaseChange(string newState)
         {
-            GameLoopManager.PhaseChange += OnPhaseChange;
-        }
-        
-        
-        private void OnDisable()
-        {
-            GameLoopManager.PhaseChange -= OnPhaseChange;
-        }
-
-
-        private void OnPhaseChange(GamePhase obj)
-        {
-            _phaseText.text = string.Format(_phaseFormat, obj.Name);
+            _phaseText.text = string.Format(_phaseFormat, newState);
         }
     }
 }

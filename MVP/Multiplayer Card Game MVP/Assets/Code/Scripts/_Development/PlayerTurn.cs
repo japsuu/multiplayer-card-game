@@ -14,7 +14,7 @@ namespace _Development
             AddState("DiscardCards", new DiscardCardsState());
             AddState("ActivateCards", new ActivateCardsState());
             AddState("PlayCards", new PlayCardsState());
-            
+            //TODO: WaitForAllReady state
             
             // ----- Transitions -----
             AddTransition(new Transition("DrawCards", "AskMoveOrPlayCards"));

@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using DG.Tweening;
-using Singletons;
 using TMPro;
 using UnityEngine;
+using Utils.Singletons;
 
 namespace UI
 {

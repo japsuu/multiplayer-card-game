@@ -34,8 +34,6 @@ namespace UI
         {
             _button.onClick.AddListener(ClickAction);
             SubscribeToEvents(SetVisibility);
-            
-            // GameLoopManager.PlayerTurnEnd += HideSelf;
         }
 
 
@@ -43,8 +41,6 @@ namespace UI
         {
             _button.onClick.RemoveListener(ClickAction);
             UnsubscribeFromEvents(SetVisibility);
-            
-            // GameLoopManager.PlayerTurnEnd -= HideSelf;
         }
 
 

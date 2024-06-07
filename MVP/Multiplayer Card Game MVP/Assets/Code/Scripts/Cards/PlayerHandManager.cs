@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Cards.Data;
 using Entities;
-using PhaseSystem;
-using Singletons;
+using StateManagement;
 using UnityEngine;
+using Utils.Singletons;
 using Random = UnityEngine.Random;
 
 namespace Cards
@@ -49,10 +49,8 @@ namespace Cards
         private readonly PlayerHand _hand = new();
         private Vector3 _cardsPanelOriginalPos;
         
-        public int CardsPlayedThisTurn { get; private set; }
-        public int CardsActivatedThisTurn { get; private set; }
         public int CardCount => _hand.Cards.Count;
-        public int DrawLimit => _drawLimit;
+        public bool CanDrawCard => CardCount < _drawLimit;
         
         
         /// <summary>
@@ -68,10 +66,11 @@ namespace Cards
         /// <summary>
         /// Draws a card from the draw pile and adds it to the player's hand.
         /// </summary>
-        public void DrawCard()
+        public IEnumerator DrawCard()
         {
             CardData cardData = RemoveCardFromDrawPile();
             DrawCard(cardData);
+            yield return new WaitForSeconds(0.2f);
         }
 
 
@@ -94,8 +93,6 @@ namespace Cards
         /// </summary>
         public void PlayCard(CardInstance card, Vector2Int cell)
         {
-            CardsPlayedThisTurn++;
-
             IEnumerator coroutine = card.Data.OnPlayed(card, cell);
             StartCoroutine(coroutine);
             
@@ -116,8 +113,6 @@ namespace Cards
         /// </summary>
         public void ActivateCard(CardInstance card)
         {
-            CardsActivatedThisTurn++;
-            
             IEnumerator coroutine = card.Data.OnActivated(card);
             StartCoroutine(coroutine);
 
@@ -171,16 +166,12 @@ namespace Cards
 
         public void ShowHand()
         {
-            CardsPlayedThisTurn = 0;
-            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos;
         }
 
 
         public void HideHand()
         {
-            CardsPlayedThisTurn = 0;
-            CardsActivatedThisTurn = 0;
             _cardsPanel.position = _cardsPanelOriginalPos - Vector3.up * _cardsPanelHideOffset;
         }
         
@@ -225,15 +216,15 @@ namespace Cards
 
         private void OnEnable()
         {
-            GameLoopManager.PlayerTurnStart += InvokeOnTurnStart;
-            GameLoopManager.PlayerTurnEnd += InvokeOnTurnEnd;
+            GameManager.PlayerTurnStart += InvokeOnTurnStart;
+            GameManager.PlayerTurnEnd += InvokeOnTurnEnd;
         }
         
         
         private void OnDisable()
         {
-            GameLoopManager.PlayerTurnStart -= InvokeOnTurnStart;
-            GameLoopManager.PlayerTurnEnd -= InvokeOnTurnEnd;
+            GameManager.PlayerTurnStart -= InvokeOnTurnStart;
+            GameManager.PlayerTurnEnd -= InvokeOnTurnEnd;
         }
         
         

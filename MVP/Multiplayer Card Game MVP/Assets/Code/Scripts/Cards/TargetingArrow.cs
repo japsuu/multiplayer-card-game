@@ -1,6 +1,6 @@
 ﻿using Boards;
-using Singletons;
 using UnityEngine;
+using Utils.Singletons;
 
 namespace Cards
 {

@@ -21,7 +21,7 @@ namespace Entities.Players
         
         private readonly List<Vector2Int> _availableMovementCells = new();
         
-        public int PlayerMovementsThisTurn { get; private set; }
+        public bool HasPlayerMoved { get; private set; }
         
         
         /// <summary>
@@ -29,7 +29,7 @@ namespace Entities.Players
         /// </summary>
         public void EnableMovement()
         {
-            PlayerMovementsThisTurn = 0;
+            HasPlayerMoved = false;
             _allowMovement = true;
             StartHighlightCells(PlayerCharacter.LocalPlayer.BoardPosition);
         }
@@ -40,7 +40,7 @@ namespace Entities.Players
         /// </summary>
         public void DisableMovement()
         {
-            PlayerMovementsThisTurn = 0;
+            HasPlayerMoved = false;
             _allowMovement = false;
             StopHighlightCells();
         }
@@ -104,7 +104,6 @@ namespace Entities.Players
 
         private void MovePlayer(Vector2Int cellPos)
         {
-            PlayerMovementsThisTurn++;
             StartCoroutine(MoveCoroutine(cellPos));
         }
 
@@ -112,7 +111,7 @@ namespace Entities.Players
         private IEnumerator MoveCoroutine(Vector2Int cellPos)
         {
             yield return BoardManager.Instance.MoveOccupant(PlayerCharacter.LocalPlayer, cellPos);
-            
+            HasPlayerMoved = true;
             /*if (PlayerMovementsThisTurn < _movementActions)
                 StartHighlightCells(cellPos);*/
         }
