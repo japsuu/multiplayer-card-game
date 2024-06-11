@@ -1,18 +1,10 @@
-﻿using UnityHFSM;
-
-namespace StateManagement.Turns.Players
+﻿namespace StateManagement.Turns.Players
 {
-    public class ActivateCardsState : StateBase
+    public class ActivateCardsState : PlayerState
     {
-        public ActivateCardsState() : base(needsExitTime:true)
-        {
-        }
-
-
-        public override void OnEnter()
-        {
-            GameState.SetAllowCardActivation(true);
-        }
+        protected override bool ShouldShowHand => true;
+        protected override bool AllowSkip => true;
+        protected override bool AllowCardActivation => true;
 
 
         public override void OnLogic()
@@ -20,35 +12,6 @@ namespace StateManagement.Turns.Players
             // Exit if there are no cards to activate
             if (!GameState.HasHandCards)
                 fsm.StateCanExit();
-        }
-
-
-        /*public override void OnLogic()
-        {
-            base.OnLogic();
-            
-            // Skipping
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                fsm.StateCanExit();
-                return;
-            }
-            
-            // Activating
-            if (GameState.HasHandCards && Input.GetKeyDown(KeyCode.A))
-            {
-                GameState.ActivateCard();
-
-                // Exit if there are no more cards to activate
-                if (!GameState.HasHandCards)
-                    fsm.StateCanExit();
-            }
-        }*/
-
-
-        public override void OnExit()
-        {
-            GameState.SetAllowCardActivation(false);
         }
     }
 }

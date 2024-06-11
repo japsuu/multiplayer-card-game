@@ -1,20 +1,21 @@
-﻿using UnityHFSM;
-
-namespace StateManagement.Turns.Players
+﻿namespace StateManagement.Turns.Players
 {
-    public class PlayerTurnStartState : StateBase
+    public class PlayerTurnStartState : PlayerState
     {
-        public PlayerTurnStartState() : base(needsExitTime:true)
-        {
-            
-        }
+        protected override bool ShouldShowHand => false;
+        protected override bool AllowMovement => false;
+        protected override bool AllowCardDiscard => false;
+        protected override bool AllowCardActivation => false;
+        protected override bool AllowCardPlay => false;
+        protected override bool AllowSkip => false;
+        protected override bool AllowEndTurn => false;
 
 
-        public override void OnEnter()
+        protected override void OnEnterState()
         {
             GameManager.OnPlayerTurnStart();
-            
-            GameState.DisableEverything();
+
+            GameState.SetSelectedPlayerAction(PlayerAction.None);
         }
 
 

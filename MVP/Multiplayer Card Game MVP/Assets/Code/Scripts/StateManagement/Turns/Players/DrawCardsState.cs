@@ -1,20 +1,16 @@
 ﻿using System.Collections;
 using Cards;
 using UnityEngine;
-using UnityHFSM;
 
 namespace StateManagement.Turns.Players
 {
-    public class DrawCardsState : StateBase
+    public class DrawCardsState : PlayerState
     {
-        public DrawCardsState() : base(needsExitTime:true)
-        {
-        }
+        protected override bool ShouldShowHand => true;
 
 
-        public override void OnEnter()
+        protected override void OnEnterState()
         {
-            GameState.SetShowHand(true);
             GameManager.RunCoroutine(DrawCards());
         }
 
@@ -22,19 +18,11 @@ namespace StateManagement.Turns.Players
         private IEnumerator DrawCards()
         {
             yield return new WaitForSeconds(1f);
-            
+
             // Draw cards until the player reaches their draw limit.
             while (PlayerHandManager.Instance.CanDrawCard)
-            {
                 yield return PlayerHandManager.Instance.DrawCard();
-            }
             fsm.StateCanExit();
-        }
-
-
-        public override void OnExit()
-        {
-            GameState.SetShowHand(false);
         }
     }
 }

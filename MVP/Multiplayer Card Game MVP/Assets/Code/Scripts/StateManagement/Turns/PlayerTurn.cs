@@ -28,8 +28,24 @@ namespace StateManagement.Turns
             AddTransition(new Transition("ActivateCards", "PlayCards", _ => GameState.HasActivatedCards));  // Only allow playing cards if there are activated cards
             AddTransition(new Transition("PlayCards", "TurnEnd"));
             
+            // Trigger transition to skip to TurnEnd
+            AddTriggerTransitionFromAny("EndTurnRequested", new Transition("", "TurnEnd"));
+            
             // Exit transitions
             AddExitTransition(new Transition("TurnEnd", ""));
+        }
+        
+        
+        public void SkipCurrentState()
+        {
+            StateCanExit();
+        }
+        
+        
+        public void EndTurn()
+        {
+            Trigger("EndTurnRequested");
+            StateCanExit();
         }
     }
 }

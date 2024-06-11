@@ -1,6 +1,6 @@
-﻿using Cards;
+﻿using System;
+using Cards;
 using Entities.Players;
-using UnityEngine;
 
 namespace StateManagement
 {
@@ -16,6 +16,8 @@ namespace StateManagement
     /// </summary>
     public static class GameState
     {
+        public static event Action<string[], Action<string>> OnRequestChoice;
+        
         public static PlayerAction SelectedPlayerAction { get; private set; }
         
         public static bool ShowHand { get; private set; }
@@ -31,16 +33,9 @@ namespace StateManagement
         public static bool HasLocalPlayerMoved => PlayerCharacter.LocalPlayer.Movement.HasPlayerMoved;
         
         
-        public static void DisableEverything()
+        public static void RequestChoice(string[] choices, Action<string> callback)
         {
-            SetSelectedPlayerAction(PlayerAction.None);
-            SetAllowMovement(false);
-            SetAllowCardDiscard(false);
-            SetAllowCardActivation(false);
-            SetAllowCardPlay(false);
-            SetAllowSkip(false);
-            SetAllowEndTurn(false);
-            SetShowHand(false);
+            OnRequestChoice?.Invoke(choices, callback);
         }
         
         
@@ -57,7 +52,6 @@ namespace StateManagement
                 PlayerHandManager.Instance.ShowHand();
             else
                 PlayerHandManager.Instance.HideHand();
-            Debug.Log($"Hand shown: {value}");
         }
         
         

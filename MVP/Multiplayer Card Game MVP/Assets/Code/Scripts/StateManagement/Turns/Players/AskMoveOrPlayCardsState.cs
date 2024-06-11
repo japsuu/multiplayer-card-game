@@ -1,32 +1,40 @@
 ﻿using UnityEngine;
-using UnityHFSM;
 
 namespace StateManagement.Turns.Players
 {
-    public class AskMoveOrPlayCardsState : StateBase
+    public class AskMoveOrPlayCardsState : PlayerState
     {
-        public AskMoveOrPlayCardsState() : base(needsExitTime:true)
+        protected override bool AllowEndTurn => true;
+        protected override bool ShouldShowHand => true;
+
+
+        protected override void OnEnterState()
         {
+            GameState.SetSelectedPlayerAction(PlayerAction.None);
+            GameState.RequestChoice(new[] { "Move", "Play Cards" }, OnChoiceSelected);
         }
 
-        
-        public override void OnEnter()
+
+        public override void OnLogic()
         {
-            GameState.SetAllowEndTurn(true);
+            if (GameState.SelectedPlayerAction != PlayerAction.None)
+                fsm.StateCanExit();
         }
         
         
-        public override void OnLogic()
+        private static void OnChoiceSelected(string choice)
         {
-            if (Input.GetKeyDown(KeyCode.M))
+            switch (choice)
             {
-                GameState.SetSelectedPlayerAction(PlayerAction.Move);
-                fsm.StateCanExit();
-            }
-            else if (Input.GetKeyDown(KeyCode.P))
-            {
-                GameState.SetSelectedPlayerAction(PlayerAction.PlayCards);
-                fsm.StateCanExit();
+                case "Move":
+                    GameState.SetSelectedPlayerAction(PlayerAction.Move);
+                    break;
+                case "Play Cards":
+                    GameState.SetSelectedPlayerAction(PlayerAction.PlayCards);
+                    break;
+                default:
+                    Debug.LogError($"Invalid choice: {choice}");
+                    break;
             }
         }
     }

@@ -144,7 +144,7 @@ namespace Cards
         /// </summary>
         public void DiscardCard(CardInstance card)
         {
-            if (card.HasBeenActivated)
+            if (card.HasBeenActivated && !card.HasBeenPlayed)
                 DeactivateCard(card);
             
             IEnumerator coroutine = card.Data.OnDiscarded(card);

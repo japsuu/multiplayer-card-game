@@ -1,31 +1,16 @@
-﻿using UnityHFSM;
-
-namespace StateManagement.Turns.Players
+﻿namespace StateManagement.Turns.Players
 {
-    public class MoveState : StateBase
+    public class MoveState : PlayerState
     {
-        public MoveState() : base(needsExitTime:true)
-        {
-        }
+        protected override bool AllowSkip => true;
+        protected override bool AllowMovement => true;
 
 
-        public override void OnEnter()
-        {
-            GameState.SetAllowMovement(true);
-        }
-        
-        
         public override void OnLogic()
         {
 #warning TODO: Move movement code to movement state.
             if (GameState.HasLocalPlayerMoved)
                 fsm.StateCanExit();
-        }
-
-
-        public override void OnExit()
-        {
-            GameState.SetAllowMovement(false);
         }
     }
 }

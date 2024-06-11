@@ -9,11 +9,17 @@ namespace StateManagement
     /// </summary>
     public class GameStateMachine : StateMachine
     {
+        private readonly PlayerTurn _playerTurn;
+        private readonly EnemyTurn _enemyTurn;
+        
+        
         public GameStateMachine()
         {
             // States
-            AddState("PlayerTurn", new PlayerTurn());
-            AddState("EnemyTurn", new EnemyTurn());
+            _playerTurn = new PlayerTurn();
+            _enemyTurn = new EnemyTurn();
+            AddState("PlayerTurn", _playerTurn);
+            AddState("EnemyTurn", _enemyTurn);
             
             // Transitions
             // Alternate between player and enemy turns
@@ -27,8 +33,10 @@ namespace StateManagement
             if (!GameState.AllowSkip)
                 throw new InvalidOperationException("Skip button should not be interactable when skipping is not allowed.");
             
-#warning TODO: Verify this works
-            ActiveState.fsm.StateCanExit();
+            if (ActiveState != _playerTurn)
+                throw new InvalidOperationException("Skipping is only allowed during the player's turn.");
+            
+            _playerTurn.SkipCurrentState();
         }
 
 
@@ -36,8 +44,11 @@ namespace StateManagement
         {
             if (!GameState.AllowEndTurn)
                 throw new InvalidOperationException("End turn button should not be interactable when ending the turn is not allowed.");
-#warning TODO: Implement EndTurn
-            throw new NotImplementedException();
+            
+            if (ActiveState != _playerTurn)
+                throw new InvalidOperationException("Ending the turn is only allowed during the player's turn.");
+            
+            _playerTurn.EndTurn();
         }
     }
 }
