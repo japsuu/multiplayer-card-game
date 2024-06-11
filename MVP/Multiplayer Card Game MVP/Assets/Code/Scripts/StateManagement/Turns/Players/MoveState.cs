@@ -1,4 +1,8 @@
-﻿namespace StateManagement.Turns.Players
+﻿using System.Collections;
+using UI;
+using UnityEngine;
+
+namespace StateManagement.Turns.Players
 {
     public class MoveState : PlayerState
     {
@@ -6,11 +10,17 @@
         protected override bool AllowMovement => true;
 
 
-        public override void OnLogic()
+        protected override void OnEnterState()
         {
-#warning TODO: Move movement code to movement state.
-            if (GameState.HasLocalPlayerMoved)
-                fsm.StateCanExit();
+            GameManager.RunCoroutine(StartCoroutine());
+        }
+
+
+        private IEnumerator StartCoroutine()
+        {
+            yield return PhaseBanner.DisplayPhase("Movement", false);
+            yield return new WaitUntil(() => GameState.HasLocalPlayerMoved);
+            fsm.StateCanExit();
         }
     }
 }

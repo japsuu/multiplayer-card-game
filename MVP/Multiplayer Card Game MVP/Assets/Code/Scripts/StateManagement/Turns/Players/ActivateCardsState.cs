@@ -1,4 +1,8 @@
-﻿namespace StateManagement.Turns.Players
+﻿using System.Collections;
+using UI;
+using UnityEngine;
+
+namespace StateManagement.Turns.Players
 {
     public class ActivateCardsState : PlayerState
     {
@@ -7,11 +11,17 @@
         protected override bool AllowCardActivation => true;
 
 
-        public override void OnLogic()
+        protected override void OnEnterState()
         {
-            // Exit if there are no cards to activate
-            if (!GameState.HasHandCards)
-                fsm.StateCanExit();
+            GameManager.RunCoroutine(StartCoroutine());
+        }
+
+
+        private IEnumerator StartCoroutine()
+        {
+            yield return PhaseBanner.DisplayPhase("Activate Cards", false);
+            yield return new WaitUntil(() => !GameState.HasHandCards);
+            fsm.StateCanExit();
         }
     }
 }

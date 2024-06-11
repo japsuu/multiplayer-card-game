@@ -1,4 +1,8 @@
-﻿namespace StateManagement.Turns.Players
+﻿using System.Collections;
+using UI;
+using UnityEngine;
+
+namespace StateManagement.Turns.Players
 {
     public class DiscardCardsState : PlayerState
     {
@@ -7,13 +11,17 @@
         protected override bool AllowCardDiscard => true;
 
 
-        public override void OnLogic()
+        protected override void OnEnterState()
         {
-#warning TODO: Move discard logic to discard state.
+            GameManager.RunCoroutine(StartCoroutine());
+        }
 
-            // Exit if there are no cards to discard
-            if (!GameState.HasHandCards)
-                fsm.StateCanExit();
+
+        private IEnumerator StartCoroutine()
+        {
+            yield return PhaseBanner.DisplayPhase("Discard Cards", false);
+            yield return new WaitUntil(() => !GameState.HasHandCards);
+            fsm.StateCanExit();
         }
     }
 }
