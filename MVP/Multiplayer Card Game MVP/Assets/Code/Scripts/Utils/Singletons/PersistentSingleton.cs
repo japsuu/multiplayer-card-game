@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Singletons
+namespace Utils.Singletons
 {
     /// <summary>
     /// Singleton object that will add itself as DontDestroyOnLoad.

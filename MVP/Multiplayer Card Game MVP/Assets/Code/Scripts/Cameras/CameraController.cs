@@ -1,5 +1,5 @@
-﻿using Singletons;
-using UnityEngine;
+﻿using UnityEngine;
+using Utils.Singletons;
 
 namespace Cameras
 {

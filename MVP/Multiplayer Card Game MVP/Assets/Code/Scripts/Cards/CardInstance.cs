@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Boards;
 using Cards.Data;
 using Cards.Tags;
-using PhaseSystem;
+using StateManagement;
 using TMPro;
 using UI.Cards;
 using UnityEngine;
@@ -119,7 +119,7 @@ namespace Cards
             
             if (HasBeenActivated)
             {
-                if (!GameLoopManager.AllowCardPlay)
+                if (!GameState.AllowCardPlay)
                     return;
                 
                 if (Data.CanBePlayed)
@@ -145,7 +145,7 @@ namespace Cards
                     return;
                 }
             }
-            else if (!GameLoopManager.AllowCardActivation)
+            else if (!GameState.AllowCardActivation)
                 return;
             
             _isBeingDragged = true;

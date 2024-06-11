@@ -1,7 +1,7 @@
 ﻿using System;
 using Cards;
 using DamageSystem;
-using PhaseSystem;
+using StateManagement;
 using UnityEngine;
 
 namespace Entities.Players
@@ -42,7 +42,7 @@ namespace Entities.Players
         {
             base.OnDied();
             
-            GameLoopManager.Instance.StopGameLoop();
+            GameManager.OnPlayerDeath();
         }
 
         

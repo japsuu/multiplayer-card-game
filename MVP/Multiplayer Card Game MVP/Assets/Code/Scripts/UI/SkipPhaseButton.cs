@@ -1,23 +1,23 @@
 ﻿using System;
-using PhaseSystem;
+using StateManagement;
 using UnityEngine.Events;
 
 namespace UI
 {
     public class SkipPhaseButton : ToggleableEventButton
     {
-        protected override UnityAction ClickAction => GameLoopManager.RequestSkipPhase;
+        protected override UnityAction ClickAction => GameManager.SkipCurrentState;
 
 
         protected override void SubscribeToEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowSkipButton += setVisibility;
+            GameManager.RequestShowSkipButton += setVisibility;
         }
 
 
         protected override void UnsubscribeFromEvents(Action<bool> setVisibility)
         {
-            GameLoopManager.RequestShowSkipButton -= setVisibility;
+            GameManager.RequestShowSkipButton -= setVisibility;
         }
     }
 }
