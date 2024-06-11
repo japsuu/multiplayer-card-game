@@ -23,9 +23,6 @@ namespace Cards
         [SerializeField]
         private CardInstance _cardPrefab;
         
-        [SerializeField]
-        private List<CardData> _startingCards;
-        
         [Header("Debug")]
         
         [SerializeField]
@@ -231,13 +228,6 @@ namespace Cards
         {
             _cardsPanelOriginalPos = _cardsPanel.position;
             HideHand();
-        }
-
-
-        private void Start()
-        {
-            foreach (CardData cardData in _startingCards)
-                DrawCard(cardData);
         }
 
 
