@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using Entities.Enemies;
 using UI;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace StateManagement.Turns
             yield return new WaitForSeconds(1f);
             yield return PhaseBanner.DisplayPhase("Enemy Turn", true);
             
-            foreach (EnemyCharacter enemy in EnemyManager.Enemies)
+            foreach (EnemyCharacter enemy in EnemyManager.Enemies.ToArray())
             {
                 enemy.UpdateAttackHighlighter();
                 
