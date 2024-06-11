@@ -38,6 +38,8 @@ namespace StateManagement.Turns
                 yield return new WaitForSeconds(0.5f);
                 
                 yield return enemy.Movement.Move();
+                
+                enemy.UpdateAttackHighlighter();
             }
             
             fsm.StateCanExit();
