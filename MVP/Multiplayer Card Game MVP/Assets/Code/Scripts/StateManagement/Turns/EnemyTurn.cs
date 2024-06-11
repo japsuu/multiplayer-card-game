@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Entities.Enemies;
+using UI;
 using UnityEngine;
 using UnityHFSM;
 
@@ -28,6 +29,7 @@ namespace StateManagement.Turns
         private IEnumerator ExecuteActions()
         {
             yield return new WaitForSeconds(1f);
+            yield return PhaseBanner.Instance.DisplayPhase("Enemy Turn");
             
             foreach (EnemyCharacter enemy in EnemyManager.Enemies)
             {

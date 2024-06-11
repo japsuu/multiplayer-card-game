@@ -1,4 +1,7 @@
-﻿namespace StateManagement.Turns.Players
+﻿using System.Collections;
+using UI;
+
+namespace StateManagement.Turns.Players
 {
     public class PlayerTurnStartState : PlayerState
     {
@@ -16,11 +19,13 @@
             GameManager.OnPlayerTurnStart();
 
             GameState.SetSelectedPlayerAction(PlayerAction.None);
+            GameManager.RunCoroutine(StartCoroutine());
         }
 
 
-        public override void OnLogic()
+        private IEnumerator StartCoroutine()
         {
+            yield return PhaseBanner.Instance.DisplayPhase("Player Turn");
             fsm.StateCanExit();
         }
     }
