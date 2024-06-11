@@ -25,7 +25,7 @@ namespace StateManagement.Turns.Players
 
         private IEnumerator StartCoroutine()
         {
-            yield return PhaseBanner.Instance.DisplayPhase("Player Turn");
+            yield return PhaseBanner.DisplayPhase("Player Turn", true);
             fsm.StateCanExit();
         }
     }

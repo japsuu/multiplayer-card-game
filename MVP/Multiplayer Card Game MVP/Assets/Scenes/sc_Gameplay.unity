@@ -4818,10 +4818,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _phaseText: {fileID: 4028888732180902073}
-  _tweenTargetScale: 4
-  _tweenGrowLength: 0.5
-  _tweenStayLength: 1
-  _tweenShrinkLength: 1
+  _tweenSettingsMinor:
+    TweenTargetScale: 2
+    TweenGrowLength: 0.2
+    TweenStayLength: 0.5
+    TweenShrinkLength: 0.4
+  _tweenSettingsMajor:
+    TweenTargetScale: 4
+    TweenGrowLength: 0.5
+    TweenStayLength: 1
+    TweenShrinkLength: 1
 --- !u!1 &6435518807794816235
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,7 +29,7 @@ namespace StateManagement.Turns
         private IEnumerator ExecuteActions()
         {
             yield return new WaitForSeconds(1f);
-            yield return PhaseBanner.Instance.DisplayPhase("Enemy Turn");
+            yield return PhaseBanner.DisplayPhase("Enemy Turn", true);
             
             foreach (EnemyCharacter enemy in EnemyManager.Enemies)
             {
