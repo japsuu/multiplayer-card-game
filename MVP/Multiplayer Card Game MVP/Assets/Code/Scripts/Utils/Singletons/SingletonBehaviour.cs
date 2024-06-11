@@ -3,7 +3,7 @@
 // ReSharper disable StaticMemberInGenericType
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 
-namespace Singletons
+namespace Utils.Singletons
 {
     /// <summary>
     /// Instance object, that can be used from anywhere by calling ClassNameHere.Instance.

@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using Cameras;
 using Entities.Enemies;
 using Entities.Players;
-using PhaseSystem;
-using Singletons;
 using UnityEngine;
+using Utils.Singletons;
 
 namespace Boards
 {
@@ -52,6 +51,19 @@ namespace Boards
         private BoardRenderer _boardRenderer;
         private Board _board;
         private CellHighlighter _hoveredCellHighlighter;
+
+
+        public void Initialize()
+        {
+            _hoveredCellHighlighter = Instantiate(_hoveredCellHighlightPrefab, transform);
+            _hoveredCellHighlighter.gameObject.SetActive(false);
+
+            SetCameraOrigin();
+
+            CreateLocalPlayer();
+
+            CreateEnemies();
+        }
         
         
         public bool TryGetCell(Vector2Int pos, out BoardCell cell) => TryGetCell(pos.x, pos.y, out cell);
@@ -269,21 +281,6 @@ namespace Boards
         private void OnBoardUpdated()
         {
             BoardUpdated?.Invoke();
-        }
-
-
-        private void Start()
-        {
-            _hoveredCellHighlighter = Instantiate(_hoveredCellHighlightPrefab, transform);
-            _hoveredCellHighlighter.gameObject.SetActive(false);
-
-            SetCameraOrigin();
-
-            CreateLocalPlayer();
-
-            CreateEnemies();
-            
-            GameLoopManager.Instance.StartGameLoop();
         }
 
 

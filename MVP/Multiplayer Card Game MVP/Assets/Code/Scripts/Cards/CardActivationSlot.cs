@@ -27,6 +27,7 @@ namespace Cards
         private TweenerCore<Color, Color, ColorOptions> _warningTween;
         
         public static IEnumerable<CardInstance> ActivatedCardInstances => ActivatedCards;
+        public static int ActivatedCardCount => ActivatedCards.Count;
 
 
         public bool CanReceiveCard(CardInstance card) => true;
